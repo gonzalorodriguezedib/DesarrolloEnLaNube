@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InvestMatch - Iniciar Sesión</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+        :root {
+            --font-family: 'Poppins', sans-serif;
+            --primary-color: #007bff;
+            --form-bg: #1e1e1e;
+            --input-border-color: #3c3c3c;
+            --text-color-light: #f8f9fa;
+            --text-color-secondary: #a0a0a0;
+            --container-border-radius: 12px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body.auth-page {
+            font-family: var(--font-family);
+            background-image: url('images/background.jpeg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        main.auth-container {
+            max-width: 450px; /* Ancho ajustado para el formulario único */
+            width: 90%;
+            background-color: var(--form-bg);
+            border-radius: var(--container-border-radius);
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+        .form-section {
+            padding: 3rem 3.5rem;
+        }
+        .form-title { font-size: 1.8rem; font-weight: 600; color: var(--text-color-light); text-align: center; }
+        .form-subtitle { color: var(--text-color-secondary); margin-bottom: 2.5rem; font-size: 0.95rem; text-align: center; }
+        .input-group { margin-bottom: 1.25rem; }
+        .input-group input {
+            width: 100%;
+            padding: 0.95rem;
+            background: transparent;
+            border: 1px solid var(--input-border-color);
+            border-radius: 5px;
+            font-size: 0.95rem;
+            color: var(--text-color-light);
+            font-family: inherit;
+        }
+        .input-group input::placeholder { color: var(--text-color-secondary); }
+        .input-group input:focus { outline: none; border-color: var(--primary-color); }
+        .btn-primary { background-color: var(--primary-color); color: white; border: none; border-radius: 5px; padding: 0.9rem; font-size: 1rem; font-weight: 500; width: 100%; margin-top: 1.5rem; cursor: pointer; text-decoration: none; text-align: center; }
+        .form-link { margin-top: 2rem; font-size: 0.9rem; text-align: center; color: var(--text-color-secondary); }
+        .form-link a { color: var(--primary-color); }
+        .notification { padding: 1rem; margin-bottom: 1rem; border-radius: 5px; text-align: center; }
+        .notification.error { background-color: #dc354522; color: #f8d7da; border: 1px solid #dc3545; }
+        .spinner { border: 4px solid rgba(255, 255, 255, 0.3); border-radius: 50%; border-top: 4px solid #fff; width: 20px; height: 20px; animation: spin 1s linear infinite; margin: auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @media (max-width: 500px) {
+            .form-section { padding: 2.5rem 2rem; }
+        }
+    </style>
+</head>
+<body class="auth-page">
+    <main class="auth-container">
+        <section class="form-section">
+            <h2 class="form-title">Inicia Sesión</h2>
+            <p class="form-subtitle">Bienvenido de nuevo.</p>
+            <div id="notification" class="notification" style="display: none;"></div>
+            <form id="loginForm">
+                <div class="input-group">
+                    <input type="email" id="email" placeholder="Correo electrónico" required>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="password" placeholder="Contraseña" required>
+                </div>
+                <button type="submit" id="submit-button" class="btn-primary">Acceder</button>
+            </form>
+            <p class="form-link">
+                ¿No tienes una cuenta? <a href="registro.html">Regístrate</a>
+            </p>
+        </section>
+    </main>
+    <script type="module" src="init.js"></script>
+    <script type="module" src="login.js"></script>
+</body>
+</html>

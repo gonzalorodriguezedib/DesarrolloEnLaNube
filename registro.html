@@ -1,0 +1,146 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InvestMatch - Crear Cuenta</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+        :root {
+            --font-family: 'Poppins', sans-serif;
+            --primary-color: #007bff;
+            --welcome-bg: #1d2c4e;
+            --form-bg: #1e1e1e;
+            --input-border-color: #3c3c3c;
+            --text-color-light: #f8f9fa;
+            --text-color-secondary: #a0a0a0;
+            --warning-color: #ffc107;
+            --container-border-radius: 12px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body.auth-page {
+            font-family: var(--font-family);
+            background-image: url('images/background.jpeg'); /* RUTA CORREGIDA A IMAGEN COMPATIBLE */
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        main.auth-container {
+            max-width: 950px;
+            width: 90%;
+            display: grid;
+            grid-template-columns: 4fr 5fr;
+            border-radius: var(--container-border-radius);
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+        .welcome-section {
+            background-color: var(--welcome-bg);
+            padding: 3.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .form-section {
+            background-color: var(--form-bg);
+            padding: 3rem 3.5rem;
+        }
+        .welcome-section h1 { font-size: 2.7rem; color: var(--text-color-light); font-weight: 500; line-height: 1.2; margin-bottom: 1.5rem; }
+        .welcome-section h1 strong { color: var(--warning-color); font-weight: 700; }
+        .welcome-section p { font-size: 1rem; line-height: 1.7; color: var(--text-color-secondary); }
+        .welcome-section p strong { color: var(--text-color-light); font-weight: 600; }
+        .form-title { font-size: 1.8rem; font-weight: 600; color: var(--text-color-light); }
+        .form-subtitle { color: var(--text-color-secondary); margin-bottom: 2.5rem; font-size: 0.95rem; }
+        .input-group { margin-bottom: 1.25rem; }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 0.95rem;
+            background: transparent;
+            border: 1px solid var(--input-border-color);
+            border-radius: 5px;
+            font-size: 0.95rem;
+            color: var(--text-color-light);
+            font-family: inherit;
+        }
+        .input-group input::placeholder { color: var(--text-color-secondary); }
+        .input-group input:focus, .input-group select:focus { outline: none; border-color: var(--primary-color); }
+        .select-group { display: flex; align-items: center; gap: 1rem; }
+        .select-group label { color: var(--text-color-secondary); font-size: 0.95rem; }
+        .select-group select {
+            -webkit-appearance: none; appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23a0a0a0' viewBox='0 0 16 16'%3E%3Cpath d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            color: var(--text-color-secondary);
+        }
+        .select-group select:valid { color: var(--text-color-light); }
+        .btn-primary { background-color: var(--primary-color); color: white; border: none; border-radius: 5px; padding: 0.9rem; font-size: 1rem; font-weight: 500; width: 100%; margin-top: 1.5rem; cursor: pointer; text-decoration: none; text-align: center; }
+        .form-link { margin-top: 2rem; font-size: 0.9rem; text-align: center; color: var(--text-color-secondary); }
+        .form-link a { color: var(--primary-color); }
+        .notification { padding: 1rem; margin-bottom: 1rem; border-radius: 5px; text-align: center; }
+        .notification.error { background-color: #dc354522; color: #f8d7da; border: 1px solid #dc3545; }
+        #success-message a.btn-primary { display: inline-block; width: auto; }
+        @media (max-width: 900px) {
+            body.auth-page { align-items: flex-start; }
+            main.auth-container { grid-template-columns: 1fr; max-width: 480px; margin: 2rem auto; }
+            .welcome-section { display: none; }
+            .form-section { padding: 2.5rem; }
+        }
+    </style>
+</head>
+<body class="auth-page">
+    <main class="auth-container">
+        <section class="welcome-section">
+            <h1>¡Bienvenido a <br><strong>InvestMatch</strong>!</h1>
+            <p>La plataforma que conecta a <strong>emprendedores</strong> con ideas brillantes y a <strong>inversores</strong> que buscan oportunidades únicas.</p>
+        </section>
+        <section class="form-section">
+            <div id="registro-wrapper">
+                <h2 class="form-title">Crea tu cuenta</h2>
+                <p class="form-subtitle">Únete a la comunidad de innovadores.</p>
+                <div id="notification" class="notification" style="display: none;"></div>
+                <form id="registroForm">
+                    <div class="input-group">
+                        <input type="text" id="nombre" placeholder="Nombre" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="apellidos" placeholder="Apellidos" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="email" id="email" placeholder="Correo electrónico" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="password" placeholder="Contraseña" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="confirmarPassword" placeholder="Confirmar Contraseña" required>
+                    </div>
+                    <div class="input-group select-group">
+                        <label for="rol">Soy:</label>
+                        <select id="rol" required>
+                            <option value="" disabled selected>Elige tu perfil</option>
+                            <option value="inversor">Inversor</option>
+                            <option value="emprendedor">Emprendedor</option>
+                        </select>
+                    </div>
+                    <button type="submit" id="submit-button" class="btn-primary">Crear Cuenta</button>
+                </form>
+                <p class="form-link">
+                    ¿Ya tienes una cuenta? <a href="login.html">Inicia sesión</a>
+                </p>
+            </div>
+            <div id="success-message" style="display: none; text-align: center;">
+                <h2 class="form-title">¡Registro completado!</h2>
+                <p class="form-subtitle">Bienvenido a InvestMatch, <strong id="nombre-usuario" style="color: var(--warning-color);"></strong>.</p>
+                <a href="dashboard.html" class="btn-primary">Ir a mi panel</a>
+            </div>
+        </section>
+    </main>
+    <script type="module" src="init.js"></script>
+    <script type="module" src="registro.js"></script>
+</body>
+</html>

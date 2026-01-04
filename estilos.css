@@ -1,0 +1,113 @@
+/* --- Hoja de Estilos Definitiva y Simplificada --- */
+
+/* 1. Variables y Reseteo Básico */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+:root {
+    --font-family: 'Poppins', sans-serif;
+    --primary-color: #007bff;
+    --welcome-bg: #1d2c4e;
+    --form-bg: #1e1e1e;
+    --input-border-color: #3c3c3c;
+    --text-color-light: #f8f9fa;
+    --text-color-secondary: #a0a0a0;
+    --warning-color: #ffc107;
+    --container-border-radius: 12px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* 2. Body y Layout Principal */
+body.auth-page {
+    font-family: var(--font-family);
+    background-image: url('background.avif'); /* RUTA CORREGIDA */
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+main.auth-container {
+    max-width: 950px;
+    width: 90%;
+    display: grid;
+    grid-template-columns: 4fr 5fr;
+    border-radius: var(--container-border-radius);
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+
+/* 3. Secciones (Bienvenida y Formulario) */
+.welcome-section {
+    background-color: var(--welcome-bg);
+    padding: 3.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.form-section {
+    background-color: var(--form-bg);
+    padding: 3rem 3.5rem;
+}
+
+/* 4. Contenido de Texto */
+.welcome-section h1 {
+    font-size: 2.7rem; color: var(--text-color-light); font-weight: 500; line-height: 1.2;
+    margin-bottom: 1.5rem;
+}
+.welcome-section h1 strong { color: var(--warning-color); font-weight: 700; }
+.welcome-section p { font-size: 1rem; line-height: 1.7; color: var(--text-color-secondary); }
+.welcome-section p strong { color: var(--text-color-light); font-weight: 600; }
+
+.form-title { font-size: 1.8rem; font-weight: 600; color: var(--text-color-light); }
+.form-subtitle { color: var(--text-color-secondary); margin-bottom: 2.5rem; font-size: 0.95rem; }
+
+/* 5. Formulario y Entradas */
+.input-group { margin-bottom: 1.25rem; }
+
+.input-group input, .input-group select {
+    width: 100%;
+    padding: 0.95rem;
+    background: transparent;
+    border: 1px solid var(--input-border-color);
+    border-radius: 5px;
+    font-size: 0.95rem;
+    color: var(--text-color-light);
+    font-family: inherit;
+}
+
+.input-group input::placeholder { color: var(--text-color-secondary); }
+.input-group input:focus, .input-group select:focus { outline: none; border-color: var(--primary-color); }
+
+.select-group { display: flex; align-items: center; gap: 1rem; }
+.select-group label { color: var(--text-color-secondary); font-size: 0.95rem; }
+.select-group select {
+    -webkit-appearance: none; appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23a0a0a0' viewBox='0 0 16 16'%3E%3Cpath d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    color: var(--text-color-secondary);
+}
+.select-group select:valid { color: var(--text-color-light); }
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+    border: none; border-radius: 5px;
+    padding: 0.9rem; font-size: 1rem; font-weight: 500;
+    width: 100%; margin-top: 1.5rem; cursor: pointer;
+}
+
+.form-link { margin-top: 2rem; font-size: 0.9rem; text-align: center; color: var(--text-color-secondary); }
+.form-link a { color: var(--primary-color); }
+
+/* 6. Responsividad */
+@media (max-width: 900px) {
+    body.auth-page { align-items: flex-start; }
+    main.auth-container { grid-template-columns: 1fr; max-width: 480px; margin: 2rem auto; }
+    .welcome-section { display: none; }
+    .form-section { padding: 2.5rem; }
+}

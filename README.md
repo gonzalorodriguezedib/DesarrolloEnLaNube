@@ -81,4 +81,82 @@ El sistema incluye una funcionalidad de **impulso de proyectos**, donde los usua
 - **Compatibilidad:** navegadores modernos (Chrome, Edge, Firefox, Safari).  
 - **Backups:** copias automáticas de la base de datos en Firebase.
 ---
+
+##  diagrama UML
+
+### clases
+
+class Usuario {
+  - id: string
+  - email: string
+  - passwordHash: string
+  - nombre: string
+  - apellidos: string
+  - fechaRegistro: number
+  - activo: boolean
+  - rol: string << "inversor" | "emprendedor" | "admin" >>
+  --
+  + registro()
+  + login()
+  + editarPerfil()
+  + desactivarCuenta()
+}
+
+class Proyecto {
+  - id: string
+  - emprendedorId: string
+  - titulo: string
+  - descripcion: string
+  - imagenes: string[]
+  - montoSolicitado: number
+  - categoria: string
+  - estado: string << "activo" | "cerrado" >>
+  - esVIP: boolean
+  - nivelBoost: number
+  - fechaBoost: number
+  - fechaCreacion: number
+  --
+  + crear()
+  + editar()
+  + eliminar()
+  + asignarBoost()
+  + quitarBoost()
+}
+
+class Reserva {
+  - id: string
+  - proyectoId: string
+  - inversorId: string
+  - monto: number
+  - metodoPago: string
+  - comision: number
+  - estado: string << "pendiente" | "pagado" | "cancelado" >>
+  - fechaReservado: number
+  --
+  + crearReserva()
+  + cancelarReserva()
+  + confirmarPago()
+}
+
+class Pago {
+  - id: string
+  - reservaId: string
+  - inversorId: string
+  - proyectoId: string
+  - metodoPago: string
+  - estado: string << "pendiente" | "completado" | "fallido" >>
+  - comision: number
+  - fechaPago: number
+  --
+  + procesarPago()
+  + reembolsar()
+}
+
+### relaciones
+
+Usuario "1" -- "0..*" Proyecto : crea >
+Usuario "1" -- "0..*" Reserva : realiza >
+Proyecto "1" -- "0..*" Reserva : recibe >
+Reserva "1" -- "0..1" Pago : genera >
+
 © 2025 Gonzalo Rodríguez — 2º DAM  
