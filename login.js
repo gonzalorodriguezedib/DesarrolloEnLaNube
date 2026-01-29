@@ -1,59 +1,56 @@
-import Usuario from './models/Usuario.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    const loginForm = document.getElementById('loginForm');
-    const notification = document.getElementById('notification');
-    const submitButton = document.getElementById('submit-button');
-
-    // Función para mostrar notificaciones
-    const showNotification = (message, type = 'error') => {
-        notification.textContent = message;
-        notification.className = `notification ${type}`;
-        notification.style.display = 'block';
-    };
-
-    // Función para gestionar el estado del botón
-    const setButtonLoading = (isLoading) => {
-        if (isLoading) {
-            submitButton.disabled = true;
-            submitButton.innerHTML = '<div class="spinner"></div>';
-        } else {
-            submitButton.disabled = false;
-            submitButton.innerHTML = 'Acceder';
-        }
-    };
+    const loginForm = document.getElementById('login-form');
+    const errorMessage = document.getElementById('error-message');
 
     if (loginForm) {
-        loginForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            notification.style.display = 'none'; // Ocultar notificaciones previas
-            setButtonLoading(true);
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
 
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+            const email = loginForm.email.value;
+            const password = loginForm.password.value;
 
-            try {
-                const resultado = await Usuario.login(email, password);
+            if (errorMessage) errorMessage.style.display = 'none';
 
-                if (resultado.success) {
-                    // Redirección en caso de éxito
-                    window.location.href = 'dashboard.html'; 
-                } else {
-                    let friendlyError = 'Credenciales incorrectas. Por favor, verifica tu correo y contraseña.';
-                    if (resultado.error.includes('auth/user-not-found')) {
-                         friendlyError = 'No se encontró ningún usuario con ese correo electrónico.';
-                    } else if (resultado.error.includes('auth/wrong-password')) {
-                        friendlyError = 'La contraseña es incorrecta.';
+            firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+              .then(() => {
+                return firebase.auth().signInWithEmailAndPassword(email, password);
+              })
+              .then((userCredential) => {
+                    const user = userCredential.user;
+                    const userRef = firebase.database().ref('users/' + user.uid);
+                    return userRef.once('value');
+              })
+              .then((snapshot) => {
+                    const userData = snapshot.val();
+                    if (userData && userData.role) {
+                        if (userData.role === 'inversor') {
+                            window.location.href = 'dashboard-inversor.html';
+                        } else if (userData.role === 'emprendedor') {
+                            window.location.href = 'dashboard-emprendedor.html';
+                        } else {
+                            throw new Error('Rol de usuario no reconocido: ' + userData.role);
+                        }
+                    } else {
+                        throw new Error('No se pudo encontrar el rol para el usuario.');
                     }
-                    showNotification(friendlyError);
-                    setButtonLoading(false);
-                }
-
-            } catch (error) {
-                console.error('Error inesperado en el inicio de sesión:', error);
-                showNotification('Ocurrió un error inesperado. Por favor, inténtalo de nuevo.');
-                setButtonLoading(false);
-            }
+              })
+              .catch((error) => {
+                    console.error('Error en el proceso de inicio de sesión:', error);
+                    if (errorMessage) {
+                        switch (error.code) {
+                            case 'auth/user-not-found':
+                            case 'auth/wrong-password':
+                            case 'auth/invalid-credential':
+                                errorMessage.textContent = 'Correo electrónico o contraseña incorrectos.';
+                                break;
+                            default:
+                                errorMessage.textContent = error.message || 'Ha ocurrido un error. Inténtalo de nuevo.';
+                                break;
+                        }
+                        errorMessage.style.display = 'block';
+                    }
+              });
         });
     }
 });

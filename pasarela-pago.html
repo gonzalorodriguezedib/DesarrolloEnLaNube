@@ -1,0 +1,80 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realizar Inversión - InvestMatch</title>
+    <link rel="stylesheet" href="pasarela-pago.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="payment-container">
+        <div class="payment-header">
+            <a href="dashboard-inversor.html" class="back-link"><i class="fas fa-arrow-left"></i> Volver</a>
+            <h1>Pasarela de Pago Segura</h1>
+            <p>Estás a un paso de invertir en <strong id="project-title-placeholder">[Nombre del Proyecto]</strong>.</p>
+        </div>
+
+        <div class="payment-body">
+            <!-- Selector de Cantidad -->
+            <div class="form-group">
+                <label for="investment-amount">¿Cuánto deseas invertir? (USD)</label>
+                <input type="number" id="investment-amount" class="form-control" placeholder="Ej: 500" min="50">
+            </div>
+
+            <!-- Selector de Método de Pago -->
+            <div class="form-group">
+                <label>Elige tu método de pago</label>
+                <div class="payment-methods">
+                    <div class="payment-method-option" data-method="credit-card">
+                        <i class="fas fa-credit-card"></i>
+                        <span>Tarjeta de Crédito</span>
+                    </div>
+                    <div class="payment-method-option" data-method="paypal">
+                        <i class="fab fa-paypal"></i>
+                        <span>PayPal</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formularios de Pago Dinámicos -->
+            <div id="payment-forms">
+                <!-- Formulario para Tarjeta de Crédito -->
+                <div id="credit-card-form" class="payment-form">
+                    <div class="form-group">
+                        <label for="card-number">Número de la Tarjeta</label>
+                        <input type="text" id="card-number" class="form-control" placeholder="XXXX XXXX XXXX XXXX">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="card-expiry">Fecha de Caducidad</label>
+                            <input type="text" id="card-expiry" class="form-control" placeholder="MM/AA">
+                        </div>
+                        <div class="form-group">
+                            <label for="card-cvc">CVC</label>
+                            <input type="text" id="card-cvc" class="form-control" placeholder="123">
+                        </div>
+                    </div>
+                     <div class="form-group">
+                        <label for="card-holder">Titular de la tarjeta</label>
+                        <input type="text" id="card-holder" class="form-control" placeholder="Nombre Apellido">
+                    </div>
+                </div>
+
+                <!-- Formulario para PayPal -->
+                <div id="paypal-form" class="payment-form">
+                    <p>Serás redirigido a PayPal para completar tu pago de forma segura.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="payment-footer">
+            <button id="pay-button" class="btn btn-primary" disabled>Pagar <span id="amount-to-pay">$0.00</span></button>
+            <p class="secure-note"><i class="fas fa-lock"></i> Transacción cifrada y segura</p>
+        </div>
+    </div>
+
+    <script src="pasarela-pago.js"></script>
+</body>
+</html>

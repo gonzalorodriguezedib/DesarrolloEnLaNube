@@ -1,0 +1,64 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del Proyecto - InvestMatch</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="dashboard-v2.css">
+    <link rel="stylesheet" href="proyecto-detalle.css">
+</head>
+<body>
+    <div class="project-detail-container">
+        <header class="project-detail-header">
+            <a href="dashboard-inversor.html" class="back-link"><i class="fas fa-arrow-left"></i> Volver al Dashboard</a>
+            <h1 id="project-title">Nombre del Proyecto</h1>
+        </header>
+
+        <main class="project-detail-grid">
+            <!-- Columna Principal: Información del Proyecto -->
+            <div class="project-main-content">
+                <div class="project-image-container">
+                    <img id="project-image" src="" alt="Imagen del Proyecto">
+                </div>
+
+                <div class="project-description card-style">
+                    <h2>Descripción del Proyecto</h2>
+                    <p id="project-description-text">Aquí va la descripción detallada...</p>
+                </div>
+            </div>
+
+            <!-- Columna Lateral: Datos Clave y Emprendedor -->
+            <aside class="project-sidebar">
+                <div class="project-financials card-style">
+                    <h3>Financiación</h3>
+                    <div class="progress-bar">
+                        <div id="progress-bar-fill" class="progress-bar-fill"></div>
+                    </div>
+                    <div class="metrics">
+                        <p><strong id="progress-percentage"></strong> financiado</p>
+                        <p><strong id="amount-raised"></strong> de <span id="goal-amount"></span></p>
+                    </div>
+                    <button class="btn btn-primary invest-button">Invertir en este Proyecto</button>
+                </div>
+
+                <div class="entrepreneur-info card-style">
+                    <h3>Sobre el Emprendedor</h3>
+                    <div class="entrepreneur-profile">
+                        <img id="entrepreneur-avatar" src="https://via.placeholder.com/80" alt="Avatar del emprendedor">
+                        <div>
+                            <h4 id="entrepreneur-name">Nombre del Emprendedor</h4>
+                            <p id="entrepreneur-location"><i class="fas fa-map-marker-alt"></i> Ciudad, País</p>
+                        </div>
+                    </div>
+                    <p id="entrepreneur-bio">Biografía corta del emprendedor...</p>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <script type="module" src="proyecto-detalle.js"></script>
+</body>
+</html>

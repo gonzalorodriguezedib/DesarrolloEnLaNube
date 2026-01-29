@@ -1,0 +1,150 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard del Emprendedor - InvestMatch</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="dashboard-v2.css">
+</head>
+<body>
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="logo">InvestMatch</a>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="#" class="nav-link" data-page="page-mis-proyectos"><i class="fa-solid fa-briefcase"></i> Mis Proyectos</a></li>
+                    <li><a href="#" class="nav-link" data-page="page-crear-proyecto"><i class="fa-solid fa-plus-circle"></i> Crear Proyecto</a></li>
+                    <li><a href="#" class="nav-link" data-page="page-estadisticas"><i class="fa-solid fa-chart-pie"></i> Estadísticas</a></li>
+                    <li><a href="#" class="nav-link" data-page="page-perfil"><i class="fa-solid fa-user-tie"></i> Mi Perfil</a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-welcome">
+                    <span>¡Bienvenido, <strong>Nombre Usuario</strong>!</span>
+                </div>
+                 <div class="dark-mode-toggle">
+                    <label for="dark-mode-checkbox-emprendedor">Modo Oscuro</label>
+                    <label class="dark-mode-switch">
+                        <input type="checkbox" id="dark-mode-checkbox-emprendedor">
+                        <span class="dark-mode-slider"></span>
+                    </label>
+                </div>
+                <button id="logout-button" class="logout-button"><i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+
+            <!-- Página 1: Mis Proyectos -->
+            <div id="page-mis-proyectos" class="dashboard-page">
+                <header class="main-header">
+                    <h1>Mis Proyectos</h1>
+                    <p class="subtitle">Gestiona, edita y sigue el progreso de tus proyectos publicados.</p>
+                </header>
+                <div class="proyectos-grid">
+                    <!-- Ejemplo de proyecto del emprendedor -->
+                    <div class="project-card" data-project-id="mi-proyecto-1">
+                        <img src="https://plus.unsplash.com/premium_photo-1661301037418-8413a34a8e4a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3" class="project-card-img">
+                        <div class="project-card-content">
+                            <h3 class="project-card-title">Mi Primer Gran Proyecto</h3>
+                            <p class="project-card-category">E-commerce</p>
+                            <div class="project-card-progress">
+                                <div class="progress-bar" style="width: 60%;"></div>
+                                <span>60% financiado</span>
+                            </div>
+                            <div class="project-card-funding">
+                                <strong>$60,000</strong> de $100,000
+                            </div>
+                            <div class="project-card-actions">
+                                <a href="#" class="btn btn-secondary">Editar</a>
+                                <a href="#" class="btn btn-primary">Ver Inversores</a>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="no-projects-message" style="display: none;">Aún no has creado ningún proyecto.</p>
+                </div>
+            </div>
+
+            <!-- Página 2: Crear Nuevo Proyecto -->
+            <div id="page-crear-proyecto" class="dashboard-page">
+                <header class="main-header">
+                    <h1>Crear Nuevo Proyecto</h1>
+                    <p class="subtitle">Completa el formulario para que los inversores descubran tu idea.</p>
+                </header>
+                <div class="form-container">
+                    <form id="create-project-form">
+                        <div class="form-group">
+                            <label for="project-title">Título del Proyecto</label>
+                            <input type="text" id="project-title" name="project-title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="project-description">Descripción Corta</label>
+                            <textarea id="project-description" name="project-description" rows="4" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="project-category">Categoría</label>
+                            <input type="text" id="project-category" name="project-category" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="funding-goal">Meta de Financiación (€)</label>
+                            <input type="number" id="funding-goal" name="funding-goal" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="project-image">URL de la Imagen de Portada</label>
+                            <input type="url" id="project-image" name="project-image" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Publicar Proyecto</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Página 3: Estadísticas -->
+            <div id="page-estadisticas" class="dashboard-page">
+                <header class="main-header">
+                    <h1>Estadísticas de tus Proyectos</h1>
+                    <p class="subtitle">Métricas clave sobre el rendimiento de tus campañas.</p>
+                </header>
+                <div class="stats-grid">
+                   <div class="stat-card">
+                       <h3>Inversores Totales</h3>
+                       <p>42</p>
+                   </div>
+                   <div class="stat-card">
+                       <h3>Fondos Recaudados</h3>
+                       <p>€ 60,000</p>
+                   </div>
+                    <div class="stat-card">
+                       <h3>Visitas a Proyectos</h3>
+                       <p>8,124</p>
+                   </div>
+                </div>
+            </div>
+
+            <!-- Página 4: Mi Perfil -->
+            <div id="page-perfil" class="dashboard-page">
+                <header class="main-header">
+                    <h1>Mi Perfil</h1>
+                    <p class="subtitle">Gestiona tu información personal y de contacto.</p>
+                </header>
+                 <div class="profile-container">
+                    <p>Aquí irá el formulario para editar la información del perfil del emprendedor.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="firebase-config.js"></script>
+
+    <script src="dark-mode.js"></script>
+    <script src="dashboard-emprendedor.js"></script>
+</body>
+</html>

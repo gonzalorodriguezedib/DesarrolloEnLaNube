@@ -1,0 +1,96 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    --primary-color: #007aff;
+    --secondary-color: #1c2541;
+    --background-color: #f8f9fa;
+    --surface-color: #ffffff;
+    --text-color: #212529;
+    --subtle-text-color: #6c757d;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --font-family: 'Inter', sans-serif;
+    --sidebar-width: 250px;
+    --border-radius: 8px;
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 10px rgba(0,0,0,0.06);
+}
+
+body { font-family: var(--font-family); background-color: var(--background-color); color: var(--text-color); margin: 0; line-height: 1.6; overflow-x: hidden; }
+.dashboard-layout { display: flex; position: relative; }
+
+/* --- Sidebar --- */
+.sidebar { width: var(--sidebar-width); background-color: var(--secondary-color); color: white; height: 100vh; position: fixed; top: 0; left: 0; display: flex; flex-direction: column; transition: transform 0.3s ease-in-out; z-index: 1000; }
+.sidebar.visible { transform: translateX(0); box-shadow: 2px 0 15px rgba(0,0,0,0.1); }
+.sidebar-header { padding: 25px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.sidebar-header .logo { font-size: 1.7em; font-weight: 700; color: white; text-decoration: none; }
+.sidebar-nav { flex-grow: 1; margin-top: 20px; }
+.sidebar-nav ul { list-style: none; padding: 0; margin: 0; }
+.sidebar-nav li a { display: flex; align-items: center; padding: 16px 25px; color: #adb5bd; text-decoration: none; font-weight: 500; transition: all 0.2s ease; border-left: 3px solid transparent; }
+.sidebar-nav li a .fas { margin-right: 15px; width: 20px; text-align: center; font-size: 0.95em; }
+.sidebar-nav li a:hover { background-color: rgba(255,255,255, 0.05); color: white; }
+.sidebar-nav li a.active { color: white; font-weight: 600; background-color: rgba(0,0,0, 0.1); border-left: 3px solid var(--primary-color); }
+.sidebar-footer { padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+.user-info p { margin: 0 0 15px 0; text-align: center; }
+#user-name { font-weight: 600; }
+.logout-button { width: 100%; background: var(--danger-color); border: none; color: white; padding: 12px; border-radius: var(--border-radius); cursor: pointer; font-weight: 600; transition: background-color 0.2s ease; }
+.logout-button:hover { background-color: #c82333; }
+
+/* --- Main Content --- */
+.main-content { margin-left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); padding: 40px; transition: margin-left 0.3s ease-in-out; }
+.dashboard-page { display: none; }
+.dashboard-page.active { display: block; animation: fadeIn 0.4s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.main-header { margin-bottom: 30px; }
+.main-header h1 { font-size: 2.3em; font-weight: 700; margin: 0; }
+.main-header .subtitle { font-size: 1.1em; color: var(--subtle-text-color); margin-top: 5px; }
+
+/* --- Component Styles --- */
+.stats-grid, .proyectos-grid, .inversores-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; }
+
+.stat-card, .proyecto-card, .inversor-card, .form-container {
+    background-color: var(--surface-color);
+    border-radius: var(--border-radius);
+    border: 1px solid #e9ecef;
+    box-shadow: var(--shadow-sm);
+    padding: 25px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.proyecto-card:hover, .inversor-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+
+.proyecto-card h3, .inversor-card h4 { margin-top: 0; font-weight: 600; }
+.proyecto-card p { color: var(--subtle-text-color); }
+
+/* --- Forms --- */
+.form-container { max-width: 700px; margin: 20px auto; }
+label { display: block; margin-bottom: 8px; font-weight: 600; }
+input, textarea, #modal-cantidad {
+    width: 100%; padding: 12px; margin-bottom: 20px; border-radius: var(--border-radius); border: 1px solid #ced4da;
+    box-sizing: border-box; font-family: var(--font-family); font-size: 1em; transition: border-color 0.2s, box-shadow 0.2s;
+}
+input:focus, textarea:focus, #modal-cantidad:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2); outline: none; }
+
+/* --- Buttons --- */
+.ver-mas-btn { background-color: var(--primary-color); color: white; padding: 10px 20px; border-radius: var(--border-radius); text-decoration: none; font-weight: 500; transition: background-color 0.2s; display: inline-block; }
+.ver-mas-btn:hover { background-color: #0056b3; }
+button { font-family: var(--font-family); }
+
+/* --- Mobile & Responsive --- */
+.mobile-menu-toggle { display: none; position: fixed; top: 15px; left: 15px; background: var(--secondary-color); color: white; border: none; border-radius: 50%; width: 45px; height: 45px; font-size: 1em; z-index: 1001; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+@media (max-width: 992px) {
+    .sidebar { transform: translateX(-100%); }
+    .main-content { margin-left: 0; width: 100%; padding: 25px; padding-top: 80px; }
+    .mobile-menu-toggle { display: block; }
+    .stats-grid, .proyectos-grid, .inversores-grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+}
+
+/* Modal (profesionalizado) */
+.modal { display: none; position: fixed; z-index: 1002; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); align-items: center; justify-content: center; }
+.modal-content { background: var(--surface-color); border-radius: var(--border-radius); width: 90%; max-width: 450px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: slideIn 0.3s ease-out; padding: 30px; }
+@keyframes slideIn { from { transform: translateY(-30px) scale(0.98); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+.close-button { float: right; font-size: 1.8em; cursor: pointer; color: var(--subtle-text-color); line-height: 1; }
+.close-button:hover { color: var(--danger-color); }
+#modal-confirmar-inversion { width: 100%; background: var(--success-color); color: white; padding: 14px; border: none; border-radius: var(--border-radius); font-size: 1.1em; font-weight: 600; cursor: pointer; transition: background-color 0.2s; }
+#modal-confirmar-inversion:hover { background-color: #218838; }

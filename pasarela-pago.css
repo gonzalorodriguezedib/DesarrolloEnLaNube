@@ -1,0 +1,165 @@
+
+/* --- GENERAL & RESET --- */
+:root {
+    --primary-color: #3498db;
+    --bg-color: #f4f7f9;
+    --card-bg-color: #ffffff;
+    --text-color: #1a1a1a;
+    --text-muted-color: #666;
+    --border-color: #e0e0e0;
+    --success-color: #2ecc71;
+    --font-family: 'Poppins', sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* --- CONTENEDOR PRINCIPAL --- */
+.payment-container {
+    width: 100%;
+    max-width: 550px;
+    background-color: var(--card-bg-color);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* --- Encabezado --- */
+.payment-header {
+    padding: 25px 30px;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.back-link {
+    float: left;
+    text-decoration: none;
+    color: var(--text-muted-color);
+    font-size: 0.9em;
+}
+.back-link i { margin-right: 5px; }
+
+.payment-header h1 {
+    font-size: 1.8em;
+    margin-top: 10px;
+}
+
+.payment-header p { color: var(--text-muted-color); }
+
+/* --- Cuerpo del Contenedor --- */
+.payment-body {
+    padding: 30px;
+}
+
+/* --- Grupos de Formulario --- */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 1em;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+/* --- Métodos de Pago --- */
+.payment-methods {
+    display: flex;
+    gap: 15px;
+}
+
+.payment-method-option {
+    flex: 1;
+    padding: 15px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 0.3s, background-color 0.3s;
+}
+
+.payment-method-option.selected {
+    border-color: var(--primary-color);
+    background-color: #f0f8ff;
+}
+
+.payment-method-option i {
+    font-size: 2em;
+    color: var(--text-muted-color);
+    margin-bottom: 8px;
+}
+
+.payment-method-option.selected i {
+    color: var(--primary-color);
+}
+
+/* --- Formularios de Pago --- */
+.payment-form { display: none; }
+
+/* --- Pie del Contenedor --- */
+.payment-footer {
+    background-color: #f9f9f9;
+    padding: 25px 30px;
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 15px;
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background-color: #2980b9;
+}
+
+.btn-primary:disabled {
+    background-color: #a0a0a0;
+    cursor: not-allowed;
+}
+
+.secure-note {
+    margin-top: 15px;
+    color: var(--text-muted-color);
+    font-size: 0.9em;
+}
+.secure-note i { margin-right: 5px; color: var(--success-color); }

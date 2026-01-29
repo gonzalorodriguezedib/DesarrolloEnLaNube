@@ -1,0 +1,218 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preguntas Frecuentes - InvestMatch</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+        :root {
+            --font-family: 'Poppins', sans-serif;
+            --primary-color: #007bff;
+            --primary-hover-color: #0069d9;
+            --section-bg-dark: #121212;
+            --card-bg: #1e1e1e;
+            --border-color: #3c3c3c;
+            --text-color-light: #f8f9fa;
+            --text-color-secondary: #a0a0a0;
+            --warning-color: #ffc107;
+            --footer-bg: #1e1e1e;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font-family); background-color: var(--section-bg-dark); color: var(--text-color-light); line-height: 1.6; }
+        .landing-header { background-color: rgba(29, 44, 78, 0.85); backdrop-filter: blur(8px); padding: 1rem 2.5rem; width: 100%; z-index: 1000; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; }
+        .header-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.6rem; font-weight: 700; color: var(--text-color-light); text-decoration: none; }
+        .main-nav { display: flex; gap: 1.5rem; }
+        .main-nav a { color: var(--text-color-light); text-decoration: none; font-weight: 500; font-size: 0.9rem; opacity: 0.8; transition: opacity 0.2s ease; }
+        .main-nav a:hover, .main-nav a.active { opacity: 1; }
+        .btn-login { background-color: var(--primary-color); color: white; padding: 0.6rem 1.2rem; border-radius: 5px; text-decoration: none; font-weight: 500; transition: background-color 0.2s ease; }
+        .btn-login:hover { background-color: var(--primary-hover-color); }
+
+        .hero { padding: 5rem 2rem; text-align: center; background: var(--card-bg); }
+        .hero h1 { font-size: 3rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .hero p { font-size: 1.1rem; color: var(--text-color-secondary); max-width: 650px; margin: 0 auto; }
+
+        .faq-section { padding: 5rem 2rem; max-width: 900px; margin: auto; }
+        .faq-item { background-color: var(--card-bg); margin-bottom: 1rem; border-radius: 8px; border: 1px solid var(--border-color); overflow: hidden; }
+        .faq-question { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem; cursor: pointer; font-size: 1.2rem; font-weight: 600; }
+        .faq-question .icon { transition: transform 0.3s ease; }
+        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; }
+        .faq-answer p { padding: 0 1.5rem 1.5rem; color: var(--text-color-secondary); border-top: 1px solid var(--border-color); padding-top: 1.5rem; margin-top: 1.5rem; }
+        .faq-item.active .faq-question .icon { transform: rotate(45deg); }
+
+        .cta-section { background-color: var(--section-bg-dark); text-align: center; padding: 5rem 2rem; }
+        .cta-section h2 { font-size: 2.5rem; margin-bottom: 1rem; }
+        .cta-section p { font-size: 1.1rem; color: var(--text-color-secondary); margin-bottom: 2.5rem; }
+        .btn-cta { background-color: var(--primary-color); color: white; border: none; padding: 1rem 2.5rem; border-radius: 8px; cursor: pointer; font-size: 1.2rem; font-weight: 600; text-decoration: none; transition: transform 0.2s, background-color 0.2s; }
+        .btn-cta:hover { background-color: var(--primary-hover-color); transform: translateY(-3px); }
+        
+        .main-footer { background-color: var(--footer-bg); color: var(--text-color-secondary); padding: 4rem 2rem 0; border-top: 1px solid var(--border-color); }
+        .footer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.5rem; max-width: 1200px; margin: 0 auto 3rem; }
+        .footer-column h4 { color: var(--text-color-light); font-size: 1.1rem; font-weight: 600; margin-bottom: 1.5rem; }
+        .footer-column p, .footer-column li { font-size: 0.9rem; margin-bottom: 0.75rem; }
+        .footer-column ul { list-style: none; padding: 0; }
+        .footer-column a { color: var(--text-color-secondary); text-decoration: none; transition: color 0.2s ease; }
+        .footer-column a:hover { color: var(--primary-color); }
+        .footer-logo { font-size: 1.8rem; font-weight: 700; color: var(--text-color-light); text-decoration: none; display: block; margin-bottom: 1rem; }
+        .social-icons a { font-size: 1.3rem; margin-right: 1.2rem; }
+        .newsletter-form { display: flex; }
+        .newsletter-form input { flex-grow: 1; padding: 0.75rem; border: 1px solid var(--border-color); background: #333; color: var(--text-color-light); border-radius: 5px 0 0 5px; outline: none; }
+        .newsletter-form button { padding: 0.75rem 1rem; background: var(--primary-color); color: white; border: none; border-radius: 0 5px 5px 0; cursor: pointer; font-size: 1rem; }
+        .footer-bottom { border-top: 1px solid var(--border-color); padding: 1.5rem 0; text-align: center; font-size: 0.85rem; }
+
+         @media (max-width: 900px) {
+            .header-container { flex-direction: column; gap: 1rem; }
+            .main-nav { flex-wrap: wrap; justify-content: center; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+         @media (max-width: 600px) {
+            .footer-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="landing-header">
+        <div class="header-container">
+            <a href="index.html" class="logo">InvestMatch</a>
+            <nav class="main-nav">
+                <a href="index.html">Inicio</a>
+                <a href="beneficios.html">Beneficios</a>
+                <a href="faq.html" class="active">Preguntas frecuentes</a>
+                <a href="opiniones.html">Opiniones</a>
+                <a href="casos-exito.html">Casos de éxito</a>
+                <a href="blog.html">Blog</a>
+                <a href="contacto.html">Contacto</a>
+            </nav>
+            <a href="login.html" class="btn-login">Iniciar Sesión</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h1>Resolvemos tus Dudas</h1>
+            <p>Encuentra aquí las respuestas a las preguntas más comunes sobre InvestMatch. Si no encuentras lo que buscas, no dudes en contactarnos.</p>
+        </section>
+
+        <section class="faq-section">
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>¿Cómo funciona InvestMatch?</span>
+                    <i class="fas fa-plus icon"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>InvestMatch es una plataforma que conecta emprendedores con inversores. Los emprendedores publican sus proyectos detallando su idea y el capital que necesitan. Los inversores exploran estos proyectos y pueden invertir directamente en los que consideren más prometedores.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>¿Qué comisiones cobra la plataforma?</span>
+                    <i class="fas fa-plus icon"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Nuestra monetización es clara y transparente. Cobramos una pequeña comisión del <strong>2.5% sobre el monto invertido</strong> en cada operación exitosa. Además, los emprendedores pueden adquirir "Impulsos" para destacar sus proyectos y aumentar su visibilidad.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>¿Mi información y mi dinero están seguros?</span>
+                    <i class="fas fa-plus icon"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>La seguridad es nuestra máxima prioridad. Utilizamos los servicios de <strong>Firebase (de Google)</strong> para la autenticación, el cifrado de datos y el alojamiento seguro. Todas las transacciones e información sensible están protegidas con los más altos estándares de la industria.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>¿Cómo puedo destacar mi proyecto?</span>
+                    <i class="fas fa-plus icon"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Los emprendedores tienen la opción de "Impulsar" su proyecto mediante un pago. Esto les da una posición prioritaria en los listados y la posibilidad de aparecer en nuestra exclusiva sección "Top 10 VIP", multiplicando por 10 su visibilidad ante inversores de alto calibre.</p>
+                </div>
+            </div>
+             <div class="faq-item">
+                <div class="faq-question">
+                    <span>¿Cómo creo una cuenta?</span>
+                    <i class="fas fa-plus icon"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Simplemente ve a nuestra <a href="registro.html" style="color: var(--primary-color);">página de registro</a>, completa el formulario con tus datos y elige tu perfil: "Emprendedor" o "Inversor". El proceso es rápido, sencillo y solo te tomará un minuto.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <h2>¿Tienes más preguntas?</h2>
+            <p>Nuestro equipo está listo para ayudarte. Contáctanos o únete a la plataforma para empezar.</p>
+            <a href="contacto.html" class="btn-cta">Contactar Ahora</a>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-grid">
+            <div class="footer-column">
+                <a href="index.html" class="footer-logo">InvestMatch</a>
+                <p>Conectando la innovación con el capital para construir el futuro.</p>
+                <div class="social-icons">
+                    <a href="#" class="fab fa-linkedin"></a>
+                    <a href="#" class="fab fa-twitter"></a>
+                    <a href="#" class="fab fa-facebook"></a>
+                    <a href="#" class="fab fa-instagram"></a>
+                </div>
+            </div>
+            <div class="footer-column">
+                <h4>Plataforma</h4>
+                <ul>
+                    <li><a href="beneficios.html">Beneficios</a></li>
+                    <li><a href="casos-exito.html">Casos de Éxito</a></li>
+                    <li><a href="opiniones.html">Opiniones</a></li>
+                    <li><a href="login.html">Iniciar Sesión</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Compañía</h4>
+                <ul>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="#">Términos de Servicio</a></li>
+                    <li><a href="#">Política de Privacidad</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Mantente Informado</h4>
+                <p>Recibe las últimas noticias y oportunidades de inversión directamente en tu correo.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Tu email">
+                    <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 InvestMatch. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.querySelectorAll('.faq-item').forEach(item => {
+            const question = item.querySelector('.faq-question');
+            const answer = item.querySelector('.faq-answer');
+            question.addEventListener('click', () => {
+                const isActive = item.classList.toggle('active');
+                if (isActive) {
+                    answer.style.maxHeight = answer.scrollHeight + 'px';
+                } else {
+                    answer.style.maxHeight = '0';
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

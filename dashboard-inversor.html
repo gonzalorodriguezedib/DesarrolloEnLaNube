@@ -1,0 +1,142 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard del Inversor - InvestMatch</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="dashboard-v2.css">
+</head>
+<body>
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="logo">InvestMatch</a>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="#" class="nav-link active" data-page="page-explorar"><i class="fa-solid fa-rocket"></i> Explorar Proyectos</a></li>
+                    <li><a href="#" class="nav-link" data-page="page-inversiones"><i class="fa-solid fa-chart-line"></i> Mis Inversiones</a></li>
+                    <li><a href="#" class="nav-link" data-page="page-favoritos"><i class="fa-solid fa-star"></i> Proyectos Favoritos</a></li>
+                    <li><a href="#" class="nav-link" data-page="page-perfil"><i class="fa-solid fa-user-tie"></i> Mi Perfil</a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-welcome">
+                    <span>¡Bienvenido, <strong>Nombre Usuario</strong>!</span>
+                </div>
+                <div class="dark-mode-toggle">
+                    <label for="dark-mode-checkbox-inversor">Modo Oscuro</label>
+                    <label class="dark-mode-switch">
+                        <input type="checkbox" id="dark-mode-checkbox-inversor">
+                        <span class="dark-mode-slider"></span>
+                    </label>
+                </div>
+                <button id="logout-button" class="logout-button"><i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <!-- Página 1: Explorar Proyectos -->
+            <div id="page-explorar" class="dashboard-page active">
+                <header class="main-header">
+                    <h1>Explorar Nuevos Proyectos</h1>
+                    <p class="subtitle">Descubre oportunidades de inversión prometedoras en el ecosistema startup.</p>
+                </header>
+                <div class="proyectos-grid">
+                    <!-- Proyecto VIP -->
+                    <div class="project-card vip" data-project-id="innovate-tech">
+                        <div class="vip-badge"><i class="fa-solid fa-crown"></i> VIP</div>
+                        <img src="https://plus.unsplash.com/premium_photo-1681487814185-6623cf461763?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3" class="project-card-img">
+                        <div class="project-card-content">
+                            <div class="project-card-header">
+                                <h3 class="project-card-title">InnovateTech</h3>
+                                <button class="favorite-btn"><i class="far fa-star"></i></button>
+                            </div>
+                            <p class="project-card-category">Tecnología IA</p>
+                            <p class="project-card-description">Revolucionando el mercado con una nueva plataforma de inteligencia artificial para análisis de datos a gran escala.</p>
+                            <div class="project-card-progress">
+                                <div class="progress-bar" style="width: 75%;"></div>
+                                <span>75% financiado</span>
+                            </div>
+                            <div class="project-card-funding">
+                                <strong>$150,000</strong> de $200,000
+                            </div>
+                            <a href="project-detail.html?id=innovate-tech" class="btn btn-primary project-card-button">Ver Proyecto</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Proyecto Normal -->
+                    <div class="project-card" data-project-id="eco-sustain">
+                        <img src="https://images.unsplash.com/photo-1556761175-59736f1dfa53?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3" class="project-card-img">
+                        <div class="project-card-content">
+                             <div class="project-card-header">
+                                <h3 class="project-card-title">EcoSustain</h3>
+                                <button class="favorite-btn"><i class="far fa-star"></i></button>
+                            </div>
+                             <p class="project-card-category">Sostenibilidad</p>
+                            <p class="project-card-description">Desarrollo de empaques biodegradables a partir de materiales reciclados para un futuro más verde.</p>
+                             <div class="project-card-progress">
+                                <div class="progress-bar" style="width: 40%;"></div>
+                                <span>40% financiado</span>
+                            </div>
+                            <div class="project-card-funding">
+                                <strong>$40,000</strong> de $100,000
+                            </div>
+                            <a href="project-detail.html?id=eco-sustain" class="btn btn-primary project-card-button">Ver Proyecto</a>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <!-- Página 2: Mis Inversiones -->
+            <div id="page-inversiones" class="dashboard-page">
+                 <header class="main-header">
+                    <h1>Mis Inversiones</h1>
+                    <p class="subtitle">Seguimiento de los proyectos en los que has invertido.</p>
+                </header>
+                <div class="proyectos-grid">
+                    <!-- Las tarjetas de inversión se insertarán aquí dinámicamente -->
+                </div>
+                <p class="no-investments-message" style="display: none;">Aún no has realizado ninguna inversión.</p>
+            </div>
+
+            <!-- Página 3: Proyectos Favoritos -->
+            <div id="page-favoritos" class="dashboard-page">
+                <header class="main-header">
+                    <h1>Proyectos Favoritos</h1>
+                    <p class="subtitle">Tus proyectos guardados para un futuro análisis.</p>
+                </header>
+                <div class="proyectos-grid">
+                    <!-- Los proyectos favoritos se insertarán aquí dinámicamente -->
+                </div>
+                 <p class="no-favorites-message" style="display: none;">Aún no has añadido ningún proyecto a favoritos.</p>
+            </div>
+
+            <!-- Página 4: Mi Perfil -->
+            <div id="page-perfil" class="dashboard-page">
+                <header class="main-header">
+                    <h1>Mi Perfil</h1>
+                    <p class="subtitle">Gestiona tu información personal y tus preferencias.</p>
+                </header>
+                <div class="profile-container">
+                    <!-- ... (contenido del perfil sin cambios) ... -->
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="firebase-config.js"></script>
+
+    <script src="projects.js"></script>
+    <script src="dark-mode.js"></script>
+    <script src="dashboard-inversor.js"></script>
+</body>
+</html>

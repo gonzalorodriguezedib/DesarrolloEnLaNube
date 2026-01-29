@@ -1,28 +1,19 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { getDatabase } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getFirestore, collection } from "firebase/firestore";
-
-// TODO: Add your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "TU_API_KEY",
-  authDomain: "TU_AUTH_DOMAIN",
-  projectId: "TU_PROJECT_ID",
-  storageBucket: "TU_STORAGE_BUCKET",
-  messagingSenderId: "TU_MESSAGING_SENDER_ID",
-  appId: "TU_APP_ID"
+  apiKey: "AIzaSyCoUJo-Y4Uow5wI5zHYfyp7gR3Zn9E7ntc",
+  authDomain: "desarrolloenlanube-67988-277f8.firebaseapp.com",
+  databaseURL: "https://desarrolloenlanube-67988-277f8-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "desarrolloenlanube-67988-277f8",
+  storageBucket: "desarrolloenlanube-67988-277f8.firebasestorage.app",
+  messagingSenderId: "964403485070",
+  appId: "1:964403485070:web:18f7e36a308e56089f6cdf"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const auth = getAuth(app);
+const db = getDatabase(app);
 
-// Collections based on your UML diagram
-const usuariosCollection = collection(db, 'usuarios');
-const proyectosCollection = collection(db, 'proyectos');
-const reservasCollection = collection(db, 'reservas');
-const pagosCollection = collection(db, 'pagos');
-
-// Export collections to be used in other files
-export { db, usuariosCollection, proyectosCollection, reservasCollection, pagosCollection };
-
+export { auth, db };

@@ -1,0 +1,67 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del Proyecto - InvestMatch</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="project-detail.css">
+</head>
+<body>
+    <div class="detail-container">
+        <header class="detail-header">
+            <a href="dashboard-inversor.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Volver al Dashboard</a>
+            <h1 id="project-title"></h1>
+            <p id="project-category"></p>
+        </header>
+
+        <main class="detail-content">
+            <div class="project-main-column">
+                <img id="project-image" src="" alt="Imagen del Proyecto" class="project-image-main">
+                <div class="project-description">
+                    <h2>Descripción Completa</h2>
+                    <p id="project-description-long"></p>
+                </div>
+            </div>
+
+            <aside class="project-sidebar">
+                <div class="funding-box">
+                    <div class="progress-bar-container">
+                        <div id="progress-bar" class="progress-bar" style="width: 0%;"></div>
+                    </div>
+                    <div class="funding-stats">
+                        <strong id="funded-amount" class="amount-raised"></strong>
+                        <span>de <span id="goal-amount"></span></span>
+                    </div>
+                    <div id="funded-percentage" class="percentage-text"></div>
+
+                    <div class="kpi-grid">
+                        <div class="kpi-item">
+                            <div id="investors-count" class="kpi-value"></div>
+                            <div class="kpi-label">Inversores</div>
+                        </div>
+                        <div class="kpi-item">
+                            <div id="days-left" class="kpi-value"></div>
+                            <div class="kpi-label">Días restantes</div>
+                        </div>
+                    </div>
+
+                    <div class="investment-action">
+                        <h3>Invierte en este proyecto</h3>
+                        <div class="investment-input-group">
+                            <span>€</span>
+                            <input type="number" id="investment-amount" placeholder="500" min="1">
+                        </div>
+                        <button id="invest-button" class="btn btn-primary btn-invest">Invertir</button>
+                    </div>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <script src="projects.js"></script>
+    <script src="project-detail.js"></script>
+</body>
+</html>

@@ -1,0 +1,242 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - InvestMatch</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+        :root {
+            --font-family: 'Poppins', sans-serif;
+            --primary-color: #007bff;
+            --primary-hover-color: #0069d9;
+            --section-bg-dark: #121212;
+            --card-bg: #1e1e1e;
+            --border-color: #3c3c3c;
+            --text-color-light: #f8f9fa;
+            --text-color-secondary: #a0a0a0;
+            --footer-bg: #1e1e1e;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font-family); background-color: var(--section-bg-dark); color: var(--text-color-light); line-height: 1.6; }
+        .landing-header { background-color: rgba(29, 44, 78, 0.85); backdrop-filter: blur(8px); padding: 1rem 2.5rem; width: 100%; z-index: 1000; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; }
+        .header-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.6rem; font-weight: 700; color: var(--text-color-light); text-decoration: none; }
+        .main-nav { display: flex; gap: 1.5rem; }
+        .main-nav a { color: var(--text-color-light); text-decoration: none; font-weight: 500; font-size: 0.9rem; opacity: 0.8; transition: opacity 0.2s ease; }
+        .main-nav a:hover, .main-nav a.active { opacity: 1; }
+        .btn-login { background-color: var(--primary-color); color: white; padding: 0.6rem 1.2rem; border-radius: 5px; text-decoration: none; font-weight: 500; transition: background-color 0.2s ease; }
+        .btn-login:hover { background-color: var(--primary-hover-color); }
+
+        .hero {
+            padding: 5rem 2rem;
+            text-align: center;
+        }
+        .hero h1 { font-size: 3rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .hero p { font-size: 1.1rem; color: var(--text-color-secondary); max-width: 750px; margin: 0 auto; }
+
+        .blog-section {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: auto;
+        }
+        .featured-post {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2.5rem;
+            align-items: center;
+            margin-bottom: 4rem;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .featured-image img { width: 100%; height: 100%; object-fit: cover; }
+        .featured-content { padding: 3rem; }
+        .featured-content .category { color: var(--primary-color); font-weight: 600; margin-bottom: 1rem; }
+        .featured-content h2 { font-size: 2rem; margin-bottom: 1rem; }
+        .featured-content p { color: var(--text-color-secondary); margin-bottom: 2rem; }
+        .btn-primary-outline { border: 1px solid var(--primary-color); color: var(--primary-color); padding: 0.6rem 1.2rem; border-radius: 5px; text-decoration: none; font-weight: 500; transition: all 0.2s ease; }
+        .btn-primary-outline:hover { background-color: var(--primary-color); color: white; }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+        .post-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .post-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.2); }
+        .post-card-image img { width: 100%; height: 200px; object-fit: cover; }
+        .post-card-content { padding: 1.5rem; }
+        .post-card-content .category { font-size: 0.8rem; color: var(--primary-color); font-weight: 600; margin-bottom: 0.5rem; }
+        .post-card-content h3 { font-size: 1.3rem; margin-bottom: 1rem; color: var(--text-color-light); }
+        .post-card-content .excerpt { color: var(--text-color-secondary); font-size: 0.95rem; margin-bottom: 1.5rem; }
+        .post-author { display: flex; align-items: center; gap: 0.75rem; font-size: 0.85rem; color: var(--text-color-secondary); }
+        .post-author img { width: 35px; height: 35px; border-radius: 50%; }
+
+        .main-footer { background-color: var(--footer-bg); color: var(--text-color-secondary); padding: 4rem 2rem 0; border-top: 1px solid var(--border-color); }
+        .footer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.5rem; max-width: 1200px; margin: 0 auto 3rem; }
+        .footer-column h4 { color: var(--text-color-light); font-size: 1.1rem; font-weight: 600; margin-bottom: 1.5rem; }
+        .footer-column p, .footer-column li { font-size: 0.9rem; margin-bottom: 0.75rem; }
+        .footer-column ul { list-style: none; padding: 0; }
+        .footer-column a { color: var(--text-color-secondary); text-decoration: none; transition: color 0.2s ease; }
+        .footer-column a:hover { color: var(--primary-color); }
+        .footer-logo { font-size: 1.8rem; font-weight: 700; color: var(--text-color-light); text-decoration: none; display: block; margin-bottom: 1rem; }
+        .social-icons a { font-size: 1.3rem; margin-right: 1.2rem; }
+        .newsletter-form { display: flex; }
+        .newsletter-form input { flex-grow: 1; padding: 0.75rem; border: 1px solid var(--border-color); background: #333; color: var(--text-color-light); border-radius: 5px 0 0 5px; outline: none; }
+        .newsletter-form button { padding: 0.75rem 1rem; background: var(--primary-color); color: white; border: none; border-radius: 0 5px 5px 0; cursor: pointer; font-size: 1rem; }
+        .footer-bottom { border-top: 1px solid var(--border-color); padding: 1.5rem 0; text-align: center; font-size: 0.85rem; }
+
+        @media (max-width: 900px) {
+            .featured-post { grid-template-columns: 1fr; }
+            .featured-content { padding: 2rem; }
+            .header-container { flex-direction: column; gap: 1rem; }
+            .main-nav { flex-wrap: wrap; justify-content: center; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+         @media (max-width: 600px) {
+            .footer-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="landing-header">
+        <div class="header-container">
+            <a href="index.html" class="logo">InvestMatch</a>
+            <nav class="main-nav">
+                <a href="index.html">Inicio</a>
+                <a href="beneficios.html">Beneficios</a>
+                <a href="faq.html">Preguntas frecuentes</a>
+                <a href="opiniones.html">Opiniones</a>
+                <a href="casos-exito.html">Casos de éxito</a>
+                <a href="blog.html" class="active">Blog</a>
+                <a href="contacto.html">Contacto</a>
+            </nav>
+            <a href="login.html" class="btn-login">Iniciar Sesión</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h1>Desde la Mente de los Expertos</h1>
+            <p>Artículos, análisis y consejos para navegar el mundo de la inversión y el emprendimiento. Tu dosis de conocimiento para tomar mejores decisiones.</p>
+        </section>
+
+        <section class="blog-section">
+            <!-- Featured Post -->
+            <div class="featured-post">
+                <div class="featured-image">
+                    <img src="images/blog-featured.jpg" alt="Artículo destacado">
+                </div>
+                <div class="featured-content">
+                    <p class="category">FINANCIACIÓN</p>
+                    <h2>Las 5 Claves para una Ronda de Financiación Exitosa en 2024</h2>
+                    <p>Descubre las estrategias que las startups más prometedoras están usando para captar la atención de los inversores y cerrar rondas de financiación en tiempo récord.</p>
+                    <a href="#" class="btn-primary-outline">Leer Artículo Completo</a>
+                </div>
+            </div>
+
+            <!-- Blog Grid -->
+            <div class="blog-grid">
+                <div class="post-card">
+                    <div class="post-card-image">
+                        <img src="images/blog-2.jpg" alt="Artículo 2">
+                    </div>
+                    <div class="post-card-content">
+                        <p class="category">INVERSIÓN</p>
+                        <h3>Cómo Identificar Startups con Potencial x100</h3>
+                        <p class="excerpt">Un análisis profundo sobre las métricas y señales que los inversores más astutos buscan para encontrar la próxima gran oportunidad.</p>
+                         <div class="post-author">
+                            <img src="images/inversor1.jpg" alt="Autor">
+                            <span>Por Laura Fernandez</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="post-card">
+                    <div class="post-card-image">
+                        <img src="images/blog-3.jpg" alt="Artículo 3">
+                    </div>
+                    <div class="post-card-content">
+                        <p class="category">EMPRENDIMIENTO</p>
+                        <h3>Pitch Deck: El Arte de Contar tu Historia en 10 Diapositivas</h3>
+                        <p class="excerpt">Consejos prácticos de un emprendedor en serie para crear una presentación que cautive y convenza a los inversores más exigentes.</p>
+                        <div class="post-author">
+                            <img src="images/emprendedor1.jpg" alt="Autor">
+                            <span>Por Carlos Mendoza</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="post-card">
+                    <div class="post-card-image">
+                        <img src="images/blog-4.jpg" alt="Artículo 4">
+                    </div>
+                    <div class="post-card-content">
+                        <p class="category">TECNOLOGÍA</p>
+                        <h3>El Rol de la IA en la Diversificación de Portafolios</h3>
+                        <p class="excerpt">Exploramos cómo las nuevas herramientas de inteligencia artificial están ayudando a los inversores a tomar decisiones más informadas.</p>
+                        <div class="post-author">
+                            <img src="images/inversor2.jpg" alt="Autor">
+                            <span>Por Sofia Rossi</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-grid">
+            <div class="footer-column">
+                <a href="index.html" class="footer-logo">InvestMatch</a>
+                <p>Conectando la innovación con el capital para construir el futuro.</p>
+                <div class="social-icons">
+                    <a href="#" class="fab fa-linkedin"></a>
+                    <a href="#" class="fab fa-twitter"></a>
+                    <a href="#" class="fab fa-facebook"></a>
+                    <a href="#" class="fab fa-instagram"></a>
+                </div>
+            </div>
+            <div class="footer-column">
+                <h4>Plataforma</h4>
+                <ul>
+                    <li><a href="beneficios.html">Beneficios</a></li>
+                    <li><a href="casos-exito.html">Casos de Éxito</a></li>
+                    <li><a href="opiniones.html">Opiniones</a></li>
+                    <li><a href="login.html">Iniciar Sesión</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Compañía</h4>
+                <ul>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="#">Términos de Servicio</a></li>
+                    <li><a href="#">Política de Privacidad</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Mantente Informado</h4>
+                <p>Recibe las últimas noticias y oportunidades de inversión directamente en tu correo.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Tu email">
+                    <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 InvestMatch. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

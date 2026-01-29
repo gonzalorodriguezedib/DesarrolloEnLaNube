@@ -1,0 +1,77 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InvestMatch - Crear Nuevo Proyecto</title>
+    <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+    <!-- Barra de Navegación -->
+    <nav class="navbar">
+        <a href="dashboard.html" class="navbar-brand">Invest<span>Match</span></a>
+        <div class="navbar-menu">
+            <div class="user-profile">
+                <span id="user-name">Cargando...</span>
+            </div>
+            <button id="logout-button" class="btn btn-logout">Cerrar Sesión</button>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="container">
+        
+        <header class="card-header" style="margin-bottom: 2rem;">
+            <h1 class="card-title" style="font-size: 1.8rem;">Publica tu Proyecto</h1>
+            <p class="text-color-secondary">Comparte tu idea con nuestra red de inversores.</p>
+        </header>
+
+        <!-- Formulario de Creación de Proyecto -->
+        <section class="card">
+            <form id="create-project-form">
+                <div class="input-group">
+                    <label for="titulo">Título del Proyecto</label>
+                    <input type="text" id="titulo" placeholder="Ej: Plataforma de IA para logística" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="descripcion">Descripción Detallada</label>
+                    <textarea id="descripcion" rows="6" placeholder="Describe la visión, el problema que resuelves y tu solución." required></textarea>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="input-group">
+                        <label for="monto">Monto Solicitado (USD)</label>
+                        <input type="number" id="monto" placeholder="Ej: 50000" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="categoria">Categoría</label>
+                        <select id="categoria" required>
+                            <option value="" disabled selected>Elige una categoría</option>
+                            <option value="tecnologia">Tecnología</option>
+                            <option value="salud">Salud</option>
+                            <option value="educacion">Educación</option>
+                            <option value="finanzas">Finanzas</option>
+                            <option value="sostenibilidad">Sostenibilidad</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="notification" style="display: none; margin-top: 1.5rem;"></div>
+
+                <div style="text-align: right; margin-top: 2rem;">
+                    <a href="dashboard.html" class="btn" style="margin-right: 1rem;">Cancelar</a>
+                    <button type="submit" id="submit-button" class="btn btn-primary">Publicar Proyecto</button>
+                </div>
+            </form>
+        </section>
+
+    </main>
+
+    <script type="module" src="init.js"></script>
+    <script type="module" src="crear-proyecto.js"></script>
+</body>
+</html>

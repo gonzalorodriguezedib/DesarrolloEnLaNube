@@ -1,52 +1,68 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-import { ref, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-import { auth, db } from '../init.js';
+
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+// Se cambian las importaciones de Firestore por las de Realtime Database
+import { ref, set, get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+// Se corrige la ruta de importación para que apunte a firebase.js
+import { auth, db } from '../firebase.js';
 
 class Usuario {
-    constructor(nombre, apellidos, email, password, rol = 'cliente') {
+    constructor(uid, nombre, apellidos, email, rol) {
+        this.uid = uid;
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.email = email;
-        this.password = password;
-        this.rol = rol; // Por defecto, el rol es 'cliente'
+        this.rol = rol;
     }
 
-    // Método para registrar un nuevo usuario
-    async registro() {
+    static async register(email, password, userData) {
         try {
-            // 1. Crear el usuario en Firebase Authentication
-            const userCredential = await createUserWithEmailAndPassword(auth, this.email, this.password);
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
-
-            // 2. Guardar los datos adicionales en Realtime Database
+            // Se usa `ref` para apuntar a la ruta en Realtime Database
             const userRef = ref(db, 'usuarios/' + user.uid);
-
+            // Se usa `set` para guardar los datos
             await set(userRef, {
-                nombre: this.nombre,
-                apellidos: this.apellidos,
-                email: this.email,
-                rol: this.rol
+                uid: user.uid,
+                nombre: userData.nombre,
+                apellidos: userData.apellidos,
+                email: email,
+                rol: userData.rol
             });
-
-            console.log("Usuario registrado y datos guardados en Realtime Database con ID: ", user.uid);
-            return { success: true, user: user };
-
+            return { success: true, user: new Usuario(user.uid, userData.nombre, userData.apellidos, email, userData.rol) };
         } catch (error) {
             console.error("Error en el registro: ", error);
-            return { success: false, error: error.message };
+            return { success: false, error: error };
         }
     }
 
-    // Método estático para iniciar sesión
     static async login(email, password) {
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
-            console.log("Usuario autenticado con ID: ", user.uid);
-            return { success: true, user: user };
+            const userRef = ref(db, 'usuarios/' + user.uid);
+            // Se usa `get` para obtener los datos una vez
+            const snapshot = await get(userRef);
+
+            if (snapshot.exists()) {
+                // `snapshot.val()` contiene los datos del usuario
+                const userData = snapshot.val();
+                return { success: true, user: new Usuario(user.uid, userData.nombre, userData.apellidos, userData.email, userData.rol) };
+            } else {
+                return { success: false, error: { message: "No se encontraron datos de usuario en la base de datos." } };
+            }
         } catch (error) {
             console.error("Error en el inicio de sesión: ", error);
-            return { success: false, error: error.message };
+            return { success: false, error: error };
+        }
+    }
+
+    static async logout() {
+        try {
+            await signOut(auth);
+            return { success: true };
+        } catch (error) {
+            console.error("Error al cerrar sesión: ", error);
+            return { success: false, error: error };
         }
     }
 }
