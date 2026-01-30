@@ -46,28 +46,10 @@
                     <h1>Mis Proyectos</h1>
                     <p class="subtitle">Gestiona, edita y sigue el progreso de tus proyectos publicados.</p>
                 </header>
-                <div class="proyectos-grid">
-                    <!-- Ejemplo de proyecto del emprendedor -->
-                    <div class="project-card" data-project-id="mi-proyecto-1">
-                        <img src="https://plus.unsplash.com/premium_photo-1661301037418-8413a34a8e4a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3" class="project-card-img">
-                        <div class="project-card-content">
-                            <h3 class="project-card-title">Mi Primer Gran Proyecto</h3>
-                            <p class="project-card-category">E-commerce</p>
-                            <div class="project-card-progress">
-                                <div class="progress-bar" style="width: 60%;"></div>
-                                <span>60% financiado</span>
-                            </div>
-                            <div class="project-card-funding">
-                                <strong>$60,000</strong> de $100,000
-                            </div>
-                            <div class="project-card-actions">
-                                <a href="#" class="btn btn-secondary">Editar</a>
-                                <a href="#" class="btn btn-primary">Ver Inversores</a>
-                            </div>
-                        </div>
-                    </div>
-                    <p class="no-projects-message" style="display: none;">Aún no has creado ningún proyecto.</p>
+                <div id="current-projects-list" class="proyectos-grid">
+                    <!-- Los proyectos se cargan aquí dinámicamente -->
                 </div>
+                <p class="no-projects-message" style="display: none;">Aún no has creado ningún proyecto.</p>
             </div>
 
             <!-- Página 2: Crear Nuevo Proyecto -->
@@ -76,29 +58,29 @@
                     <h1>Crear Nuevo Proyecto</h1>
                     <p class="subtitle">Completa el formulario para que los inversores descubran tu idea.</p>
                 </header>
-                <div class="form-container">
-                    <form id="create-project-form">
+                <div class="form-section">
+                     <form id="create-project-form" class="form-grid">
                         <div class="form-group">
                             <label for="project-title">Título del Proyecto</label>
-                            <input type="text" id="project-title" name="project-title" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="project-description">Descripción Corta</label>
-                            <textarea id="project-description" name="project-description" rows="4" required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="project-category">Categoría</label>
-                            <input type="text" id="project-category" name="project-category" required>
+                            <input type="text" id="project-title" required>
                         </div>
                         <div class="form-group">
                             <label for="funding-goal">Meta de Financiación (€)</label>
-                            <input type="number" id="funding-goal" name="funding-goal" required>
+                            <input type="number" id="funding-goal" required>
                         </div>
-                        <div class="form-group">
+                         <div class="form-group full-width">
+                            <label for="project-category">Categoría</label>
+                            <input type="text" id="project-category" placeholder="Ej: Tecnología, Sostenibilidad, E-commerce" required>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="project-description">Descripción Corta</label>
+                            <textarea id="project-description" rows="3" required></textarea>
+                        </div>
+                        <div class="form-group full-width">
                             <label for="project-image">URL de la Imagen de Portada</label>
-                            <input type="url" id="project-image" name="project-image" required>
+                            <input type="url" id="project-image" placeholder="https://ejemplo.com/imagen.jpg" required>
                         </div>
-                        <button type="submit" class="btn btn-primary">Publicar Proyecto</button>
+                        <button type="submit" class="btn-submit">Publicar Proyecto</button>
                     </form>
                 </div>
             </div>
@@ -128,13 +110,97 @@
             <!-- Página 4: Mi Perfil -->
             <div id="page-perfil" class="dashboard-page">
                 <header class="main-header">
-                    <h1>Mi Perfil</h1>
-                    <p class="subtitle">Gestiona tu información personal y de contacto.</p>
+                    <h1>Mi Perfil de Emprendedor</h1>
+                    <p class="subtitle">Gestiona tu información personal y los datos de tu empresa.</p>
                 </header>
-                 <div class="profile-container">
-                    <p>Aquí irá el formulario para editar la información del perfil del emprendedor.</p>
+                 <div class="profile-layout">
+                    <!-- Columna Izquierda: Tarjeta de Perfil -->
+                    <div class="profile-card-container">
+                        <div class="profile-card-v2">
+                            <div class="profile-avatar-wrapper">
+                                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.0.3" alt="Avatar del Emprendedor" class="profile-avatar" id="profile-avatar-img">
+                                <button class="edit-avatar-btn"><i class="fa-solid fa-camera"></i></button>
+                                <input type="file" id="avatar-upload-input" accept="image/*" style="display: none;">
+                            </div>
+                            <h2 id="profile-card-name" class="profile-name">Nombre Emprendedor</h2>
+                            <p class="profile-tagline">CEO & Fundador @ MiStartup</p>
+                            <div class="profile-stats">
+                                <div class="stat-item">
+                                    <span class="stat-value">3</span>
+                                    <span class="stat-label">Proyectos</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-value">$120K</span>
+                                    <span class="stat-label">Recaudado</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Columna Derecha: Formularios de Información -->
+                    <div class="profile-info-container">
+                        <div class="form-section">
+                            <div class="form-section-header">
+                                <h2>Información Personal</h2>
+                                <button id="edit-personal-info" class="btn-edit-section">Editar</button>
+                            </div>
+                            <form id="personal-info-form">
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label for="profile-name">Nombre Completo</label>
+                                        <input type="text" id="profile-name-input" value="Nombre Emprendedor" disabled>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="profile-email">Email</label>
+                                        <input type="email" id="profile-email-input" value="emprendedor@example.com" disabled>
+                                    </div>
+                                </div>
+                                <div class="form-actions" style="display: none;">
+                                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                    <button type="button" class="btn btn-secondary cancel-edit">Cancelar</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="form-section">
+                             <div class="form-section-header">
+                                <h2>Información de la Empresa</h2>
+                                <button id="edit-company-info" class="btn-edit-section">Editar</button>
+                            </div>
+                            <form id="company-info-form">
+                                <div class="form-grid">
+                                     <div class="form-group">
+                                        <label for="company-name">Nombre de la Empresa</label>
+                                        <input type="text" id="company-name-input" value="MiStartup" disabled>
+                                    </div>
+                                     <div class="form-group">
+                                        <label for="company-website">Sitio Web</label>
+                                        <input type="url" id="company-website-input" value="https://www.mistartup.com" disabled>
+                                    </div>
+                                    <div class="form-group full-width">
+                                        <label for="company-bio">Descripción de la Empresa</label>
+                                        <textarea id="company-bio-input" rows="4" disabled>Desarrollamos soluciones innovadoras de software para optimizar la logística en el sector del e-commerce.</textarea>
+                                    </div>
+                                </div>
+                                 <div class="form-actions" style="display: none;">
+                                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                    <button type="button" class="btn btn-secondary cancel-edit">Cancelar</button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <!-- Zona de Peligro: Eliminar Cuenta -->
+                        <div class="form-section danger-zone">
+                             <div class="form-section-header">
+                                <h2>Eliminar Cuenta</h2>
+                            </div>
+                            <p>Esta acción es irreversible. Todos tus datos, incluyendo tus proyectos y la financiación recibida, serán eliminados permanentemente. Por favor, asegúrate de que quieres proceder.</p>
+                            <button id="delete-account-btn" class="btn btn-danger">Eliminar Mi Cuenta Permanentemente</button>
+                        </div>
+                    </div>
                 </div>
             </div>
+
         </main>
     </div>
     

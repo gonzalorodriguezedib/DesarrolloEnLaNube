@@ -46,49 +46,7 @@
                     <p class="subtitle">Descubre oportunidades de inversión prometedoras en el ecosistema startup.</p>
                 </header>
                 <div class="proyectos-grid">
-                    <!-- Proyecto VIP -->
-                    <div class="project-card vip" data-project-id="innovate-tech">
-                        <div class="vip-badge"><i class="fa-solid fa-crown"></i> VIP</div>
-                        <img src="https://plus.unsplash.com/premium_photo-1681487814185-6623cf461763?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3" class="project-card-img">
-                        <div class="project-card-content">
-                            <div class="project-card-header">
-                                <h3 class="project-card-title">InnovateTech</h3>
-                                <button class="favorite-btn"><i class="far fa-star"></i></button>
-                            </div>
-                            <p class="project-card-category">Tecnología IA</p>
-                            <p class="project-card-description">Revolucionando el mercado con una nueva plataforma de inteligencia artificial para análisis de datos a gran escala.</p>
-                            <div class="project-card-progress">
-                                <div class="progress-bar" style="width: 75%;"></div>
-                                <span>75% financiado</span>
-                            </div>
-                            <div class="project-card-funding">
-                                <strong>$150,000</strong> de $200,000
-                            </div>
-                            <a href="project-detail.html?id=innovate-tech" class="btn btn-primary project-card-button">Ver Proyecto</a>
-                        </div>
-                    </div>
-                    
-                    <!-- Proyecto Normal -->
-                    <div class="project-card" data-project-id="eco-sustain">
-                        <img src="https://images.unsplash.com/photo-1556761175-59736f1dfa53?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3" class="project-card-img">
-                        <div class="project-card-content">
-                             <div class="project-card-header">
-                                <h3 class="project-card-title">EcoSustain</h3>
-                                <button class="favorite-btn"><i class="far fa-star"></i></button>
-                            </div>
-                             <p class="project-card-category">Sostenibilidad</p>
-                            <p class="project-card-description">Desarrollo de empaques biodegradables a partir de materiales reciclados para un futuro más verde.</p>
-                             <div class="project-card-progress">
-                                <div class="progress-bar" style="width: 40%;"></div>
-                                <span>40% financiado</span>
-                            </div>
-                            <div class="project-card-funding">
-                                <strong>$40,000</strong> de $100,000
-                            </div>
-                            <a href="project-detail.html?id=eco-sustain" class="btn btn-primary project-card-button">Ver Proyecto</a>
-                        </div>
-                    </div>
-                    
+                    <!-- Los proyectos se cargan desde projects.js -->
                 </div>
             </div>
 
@@ -119,11 +77,92 @@
             <!-- Página 4: Mi Perfil -->
             <div id="page-perfil" class="dashboard-page">
                 <header class="main-header">
-                    <h1>Mi Perfil</h1>
-                    <p class="subtitle">Gestiona tu información personal y tus preferencias.</p>
+                    <h1>Mi Perfil de Inversor</h1>
+                    <p class="subtitle">Gestiona tu información personal, preferencias y configuración de la cuenta.</p>
                 </header>
-                <div class="profile-container">
-                    <!-- ... (contenido del perfil sin cambios) ... -->
+                <div class="profile-layout">
+                    <!-- Columna Izquierda: Tarjeta de Perfil -->
+                    <div class="profile-card-container">
+                        <div class="profile-card-v2">
+                            <div class="profile-avatar-wrapper">
+                                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.0.3" alt="Avatar del Inversor" class="profile-avatar" id="profile-avatar-img">
+                                <button class="edit-avatar-btn"><i class="fa-solid fa-camera"></i></button>
+                                <input type="file" id="avatar-upload-input" accept="image/*" style="display: none;">
+                            </div>
+                            <h2 id="profile-card-name" class="profile-name">Nombre Inversor</h2>
+                            <p class="profile-tagline">Inversor Ángel | Apasionado por la IA y Sostenibilidad</p>
+                            <div class="profile-stats">
+                                <div class="stat-item">
+                                    <span class="stat-value">5</span>
+                                    <span class="stat-label">Inversiones</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-value">$75,000</span>
+                                    <span class="stat-label">Total Invertido</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Columna Derecha: Formularios de Información -->
+                    <div class="profile-info-container">
+                        <div class="form-section">
+                            <div class="form-section-header">
+                                <h2>Información Personal</h2>
+                                <button id="edit-personal-info" class="btn-edit-section">Editar</button>
+                            </div>
+                            <form id="personal-info-form">
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label for="profile-name">Nombre Completo</label>
+                                        <input type="text" id="profile-name-input" value="Nombre Inversor" disabled>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="profile-email">Email</label>
+                                        <input type="email" id="profile-email-input" value="inversor@example.com" disabled>
+                                    </div>
+                                    <div class="form-group full-width">
+                                        <label for="profile-bio">Biografía Corta</label>
+                                        <textarea id="profile-bio-input" rows="3" disabled>Inversor Ángel con más de 10 años de experiencia en el sector tecnológico.</textarea>
+                                    </div>
+                                </div>
+                                <div class="form-actions" style="display: none;">
+                                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                    <button type="button" class="btn btn-secondary cancel-edit">Cancelar</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="form-section">
+                             <div class="form-section-header">
+                                <h2>Preferencias de Inversión</h2>
+                                <button id="edit-investment-prefs" class="btn-edit-section">Editar</button>
+                            </div>
+                            <form id="investment-prefs-form">
+                                <div class="form-group">
+                                    <label>Sectores de Interés</label>
+                                    <div class="tags-container view-mode">
+                                        <span class="tag">Tecnología IA</span>
+                                        <span class="tag">Sostenibilidad</span>
+                                    </div>
+                                     <input type="text" class="tags-input" value="Tecnología IA,Sostenibilidad" style="display:none;">
+                                </div>
+                                <div class="form-actions" style="display: none;">
+                                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                    <button type="button" class="btn btn-secondary cancel-edit">Cancelar</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Zona de Peligro: Eliminar Cuenta -->
+                        <div class="form-section danger-zone">
+                             <div class="form-section-header">
+                                <h2>Eliminar Cuenta</h2>
+                            </div>
+                            <p>Esta acción es irreversible. Todos tus datos, incluyendo tu historial de inversiones, serán eliminados permanentemente. Por favor, asegúrate de que quieres proceder.</p>
+                            <button id="delete-account-btn" class="btn btn-danger">Eliminar Mi Cuenta Permanentemente</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
@@ -135,6 +174,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script src="firebase-config.js"></script>
 
+    <!-- Data y Lógica del Dashboard -->
     <script src="projects.js"></script>
     <script src="dark-mode.js"></script>
     <script src="dashboard-inversor.js"></script>

@@ -2,20 +2,31 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     const initializeDashboard = (user) => {
-        console.log("InvestMatch Dashboard Script v6.0 (Role Verification) Loaded.");
+        console.log("InvestMatch Dashboard Script v11.0 (Auth Fix) Loaded.");
 
-        // --- 0. Update Welcome Message ---
+        // --- 0. Update Welcome Message & Profile Card Name ---
         const welcomeElement = document.querySelector('.user-welcome strong');
-        if (welcomeElement && user) {
+        const profileCardNameElement = document.getElementById('profile-card-name');
+        
+        if (user) {
             const userRef = firebase.database().ref('users/' + user.uid);
             userRef.once('value').then(snapshot => {
                 const userData = snapshot.val();
-                if(userData && userData.name) {
-                   welcomeElement.textContent = userData.name;
+                if (userData && userData.name) {
+                    const userName = userData.name;
+                    if(welcomeElement) welcomeElement.textContent = userName;
+                    if(profileCardNameElement) profileCardNameElement.textContent = userName;
                 } else {
-                   welcomeElement.textContent = user.displayName || 'Usuario';
+                    const defaultName = user.displayName || 'Usuario';
+                    if(welcomeElement) welcomeElement.textContent = defaultName;
+                    if(profileCardNameElement) profileCardNameElement.textContent = defaultName;
                 }
-            })
+            }).catch(error => {
+                 console.error("Error al leer datos del perfil:", error);
+                 const defaultName = user.displayName || 'Usuario';
+                 if(welcomeElement) welcomeElement.textContent = defaultName;
+                 if(profileCardNameElement) profileCardNameElement.textContent = defaultName;
+            });
         }
 
         // --- 1. STATE MANAGEMENT --- 
@@ -44,23 +55,68 @@ document.addEventListener('DOMContentLoaded', () => {
         const pages = document.querySelectorAll('.dashboard-page');
         const logoutButton = document.getElementById('logout-button');
 
-        if (!explorarGrid || !favoritesGrid || !investmentsGrid) {
-            console.error("Faltan elementos HTML críticos para los grids. El script no puede ejecutarse.");
-            return;
-        }
+        // Profile Page Elements
+        const editPersonalInfoBtn = document.getElementById('edit-personal-info');
+        const personalInfoForm = document.getElementById('personal-info-form');
+        const editInvestmentPrefsBtn = document.getElementById('edit-investment-prefs');
+        const investmentPrefsForm = document.getElementById('investment-prefs-form');
+        const editAvatarBtn = document.querySelector('.edit-avatar-btn');
+        const avatarUploadInput = document.getElementById('avatar-upload-input');
+        const profileAvatarImg = document.getElementById('profile-avatar-img');
+        const deleteAccountBtn = document.getElementById('delete-account-btn');
 
         // --- 3. RENDER FUNCTIONS ---
+        const renderProjects = () => {
+            if (!explorarGrid || typeof projectsData === 'undefined') return;
+            explorarGrid.innerHTML = '';
+            projectsData.forEach(project => {
+                const card = document.createElement('div');
+                card.className = `project-card ${project.vip ? 'vip' : ''}`;
+                card.dataset.projectId = project.id;
+                card.innerHTML = `
+                    ${project.vip ? '<div class="vip-badge"><i class="fa-solid fa-crown"></i> VIP</div>' : ''}
+                    <img src="${project.image}" class="project-card-img">
+                    <div class="project-card-content">
+                         <div class="project-card-header">
+                            <h3 class="project-card-title">${project.title}</h3>
+                            <button class="favorite-btn"><i class="far fa-star"></i></button>
+                        </div>
+                        <p class="project-card-category">${project.category}</p>
+                        <p class="project-card-description">${project.description}</p>
+                        <div class="project-card-progress">
+                            <div class="progress-bar" style="width: ${project.funded_percentage}%;"></div>
+                            <span>${project.funded_percentage}% financiado</span>
+                        </div>
+                        <div class="project-card-funding">
+                            <strong>${project.funded_amount.toLocaleString()}</strong> de ${project.goal.toLocaleString()}
+                        </div>
+                        <a href="project-detail.html?id=${project.id}" class="btn btn-primary project-card-button">Ver Proyecto</a>
+                    </div>
+                `;
+                explorarGrid.appendChild(card);
+            });
+            updateStarIcons();
+        };
+
         const renderFavorites = () => {
             if (!favoritesGrid) return;
             favoritesGrid.innerHTML = '';
-            if (favoriteProjectIds.length === 0) {
+            const favoriteProjects = projectsData.filter(p => favoriteProjectIds.includes(p.id));
+            
+            if (favoriteProjects.length === 0) {
                 if (noFavoritesMessage) noFavoritesMessage.style.display = 'block';
             } else {
                 if (noFavoritesMessage) noFavoritesMessage.style.display = 'none';
-                favoriteProjectIds.forEach(id => {
-                    const originalCard = document.querySelector(`#page-explorar .project-card[data-project-id="${id}"]`);
+                favoriteProjects.forEach(project => {
+                     const originalCard = document.querySelector(`#page-explorar .project-card[data-project-id="${project.id}"]`);
                     if (originalCard) {
                         const clonedCard = originalCard.cloneNode(true);
+                        // Asegurarse que el icono de la estrella está activo en la vista de favoritos
+                        const icon = clonedCard.querySelector('.favorite-btn i');
+                        if(icon) {
+                            icon.classList.remove('far');
+                            icon.classList.add('fas');
+                        }
                         favoritesGrid.appendChild(clonedCard);
                     }
                 });
@@ -68,42 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const renderMyInvestments = () => {
-            if (!investmentsGrid) return;
-            investmentsGrid.innerHTML = '';
-            const myInvestments = JSON.parse(localStorage.getItem('myInvestments')) || [];
-
-            if (myInvestments.length === 0) {
-                if (noInvestmentsMessage) noInvestmentsMessage.style.display = 'block';
-            } else {
-                if (noInvestmentsMessage) noInvestmentsMessage.style.display = 'none';
-                myInvestments.forEach(investment => {
-                    if (typeof projectsData === 'undefined') return;
-                    const projectData = projectsData.find(p => p.id === investment.projectId);
-                    if (projectData) {
-                        const card = document.createElement('div');
-                        card.className = 'project-card';
-                        card.innerHTML = `
-                            <img src="${projectData.image}" class="project-card-img">
-                            <div class="project-card-content">
-                                <div class="project-card-header">
-                                    <h3 class="project-card-title">${projectData.title}</h3>
-                                </div>
-                                <p class="project-card-category">${projectData.category}</p>
-                                <div class="investment-details">
-                                    <strong>Tu Inversión:</strong>
-                                    <span class="user-investment-amount">${investment.amount.toLocaleString('es-ES')} €</span>
-                                </div>
-                                <div class="project-card-progress">
-                                    <div class="progress-bar" style="width: ${projectData.funded_percentage}%;" ></div>
-                                    <span>${projectData.funded_percentage}% financiado</span>
-                                </div>
-                                <a href="project-detail.html?id=${projectData.id}" class="btn btn-primary project-card-button">Ver Detalles</a>
-                            </div>
-                        `;
-                        investmentsGrid.appendChild(card);
-                    }
-                });
-            }
+            // Implementación futura
         };
 
         const updateStarIcons = () => {
@@ -133,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 saveFavorites();
                 updateStarIcons();
-                renderFavorites();
+                renderFavorites(); // Actualizar la vista de favoritos
             }
         };
 
@@ -145,7 +166,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 navLinks.forEach(n => n.classList.remove('active'));
                 document.getElementById(pageId).classList.add('active');
                 link.classList.add('active');
-                if (pageId === 'page-inversiones') renderMyInvestments();
                 if (pageId === 'page-favoritos') renderFavorites();
             });
         });
@@ -155,31 +175,53 @@ document.addEventListener('DOMContentLoaded', () => {
                 firebase.auth().signOut().then(() => { window.location.href = 'index.html'; });
             });
         }
+        
+        if (deleteAccountBtn) {
+            deleteAccountBtn.addEventListener('click', async () => {
+                const confirmation = confirm("¿Estás absolutamente seguro de que quieres eliminar tu cuenta? Esta acción es irreversible y todos tus datos serán borrados permanentemente.");
+                if (confirmation && user) {
+                    try {
+                        await firebase.database().ref('users/' + user.uid).remove();
+                        await user.delete();
+                        localStorage.clear(); 
+                        window.location.href = 'index.html';
+                    } catch (error) {
+                        console.error("Error al eliminar la cuenta:", error);
+                        alert("Hubo un error al eliminar tu cuenta. Es posible que necesites volver a iniciar sesión para completar esta acción.");
+                    }
+                }
+            });
+        }
 
         // --- 5. INITIALIZATION ---
-        if (explorarGrid) explorarGrid.addEventListener('click', handleGridClick);
-        if (favoritesGrid) favoritesGrid.addEventListener('click', handleGridClick);
-        updateStarIcons();
+        if (explorarGrid) {
+            explorarGrid.addEventListener('click', handleGridClick);
+        }
+        renderProjects();
         renderFavorites();
-        renderMyInvestments();
-        if (navLinks.length > 0) navLinks[0].click();
+        if (pages.length > 0 && navLinks.length > 0) {
+            pages.forEach(p => p.classList.remove('active'));
+            navLinks.forEach(n => n.classList.remove('active'));
+            pages[0].classList.add('active');
+            navLinks[0].classList.add('active');
+        }
     };
 
-    // --- FIREBASE AUTHENTICATION & AUTHORIZATION ---
+    // --- FIREBASE AUTHENTICATION & AUTHORIZATION (FIXED) ---
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
-            // Usuario autenticado, ahora verificamos el rol.
+            // 1. Usuario autenticado, ahora verificar rol en la base de datos
             const userRef = firebase.database().ref('users/' + user.uid);
-            userRef.once('value').then((snapshot) => {
+            userRef.once('value').then(snapshot => {
                 const userData = snapshot.val();
-                // Comprobamos si el usuario tiene el rol de 'inversor'
+                // 2. Comprobar si los datos existen y si el rol es 'inversor'
                 if (userData && userData.role === 'inversor') {
-                    // Si es inversor, inicializamos el dashboard
+                    // 3. Rol correcto, inicializar el dashboard
                     initializeDashboard(user);
                 } else {
-                    // Si no es inversor o no tiene rol, lo deslogueamos y redirigimos
-                    console.error('Acceso denegado. El usuario no tiene el rol de inversor.');
-                    firebase.auth().signOut(); // For security
+                    // 4. Rol incorrecto o no encontrado, denegar acceso
+                    console.error('Acceso denegado. El usuario no tiene el rol de inversor o no existe en la base de datos.');
+                    firebase.auth().signOut(); // Cerrar sesión para evitar bucles
                     window.location.href = 'index.html';
                 }
             }).catch(error => {
@@ -188,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.location.href = 'index.html';
             });
         } else {
-            // Si no hay usuario, simplemente redirigimos a la página de inicio.
+            // Usuario no ha iniciado sesión, redirigir a la página de inicio
             console.log('Usuario no autenticado. Redirigiendo a inicio.');
             window.location.href = 'index.html';
         }

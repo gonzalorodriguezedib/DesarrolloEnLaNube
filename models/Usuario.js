@@ -1,9 +1,6 @@
 
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-// Se cambian las importaciones de Firestore por las de Realtime Database
-import { ref, set, get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-// Se corrige la ruta de importación para que apunte a firebase.js
-import { auth, db } from '../firebase.js';
+// Este archivo ha sido refactorizado para usar la API de Firebase v8 (namespaced), 
+// eliminando la mezcla de versiones y asegurando la compatibilidad con los scripts de los dashboards.
 
 class Usuario {
     constructor(uid, nombre, apellidos, email, rol) {
@@ -16,55 +13,66 @@ class Usuario {
 
     static async register(email, password, userData) {
         try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            // Se utiliza la sintaxis de Firebase v8
+            const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
             const user = userCredential.user;
-            // Se usa `ref` para apuntar a la ruta en Realtime Database
-            const userRef = ref(db, 'usuarios/' + user.uid);
-            // Se usa `set` para guardar los datos
-            await set(userRef, {
+
+            // Se apunta a la referencia de la base de datos con la sintaxis v8
+            const userRef = firebase.database().ref('users/' + user.uid);
+
+            // Se guardan los datos del usuario en la ruta correcta, asegurando la consistencia
+            await userRef.set({
                 uid: user.uid,
-                nombre: userData.nombre,
-                apellidos: userData.apellidos,
+                name: `${userData.nombre} ${userData.apellidos}`.trim(),
                 email: email,
-                rol: userData.rol
+                role: userData.rol
             });
+
             return { success: true, user: new Usuario(user.uid, userData.nombre, userData.apellidos, email, userData.rol) };
         } catch (error) {
-            console.error("Error en el registro: ", error);
+            console.error("Error en el registro (v8): ", error);
             return { success: false, error: error };
         }
     }
 
     static async login(email, password) {
         try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            // Se utiliza la sintaxis de Firebase v8
+            const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
             const user = userCredential.user;
-            const userRef = ref(db, 'usuarios/' + user.uid);
-            // Se usa `get` para obtener los datos una vez
-            const snapshot = await get(userRef);
+
+            const userRef = firebase.database().ref('users/' + user.uid);
+            const snapshot = await userRef.once('value');
 
             if (snapshot.exists()) {
-                // `snapshot.val()` contiene los datos del usuario
                 const userData = snapshot.val();
-                return { success: true, user: new Usuario(user.uid, userData.nombre, userData.apellidos, userData.email, userData.rol) };
+                const [nombre, ...apellidos] = (userData.name || '').split(' ');
+                return { success: true, user: new Usuario(user.uid, nombre, apellidos.join(' '), userData.email, userData.role) };
             } else {
+                // Si no hay datos en la BD, se firma la salida para evitar bucles
+                await firebase.auth().signOut();
                 return { success: false, error: { message: "No se encontraron datos de usuario en la base de datos." } };
             }
         } catch (error) {
-            console.error("Error en el inicio de sesión: ", error);
+            console.error("Error en el inicio de sesión (v8): ", error);
             return { success: false, error: error };
         }
     }
 
     static async logout() {
         try {
-            await signOut(auth);
+            // Se utiliza la sintaxis de Firebase v8
+            await firebase.auth().signOut();
             return { success: true };
         } catch (error) {
-            console.error("Error al cerrar sesión: ", error);
+            console.error("Error al cerrar sesión (v8): ", error);
             return { success: false, error: error };
         }
     }
 }
+
+// Como este script no es un módulo ES6, se adjunta la clase al objeto window si es necesario,
+// aunque la importación en registro.js debería manejarlo si se configura correctamente.
+// Por ahora, se asume que el entorno de scripts lo gestiona.
 
 export default Usuario;

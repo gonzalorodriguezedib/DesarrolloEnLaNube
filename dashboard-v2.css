@@ -3,19 +3,22 @@
 :root {
     --primary-color: #4a90e2;
     --primary-hover: #357ABD;
+    --primary-color-light: #e9f2fc;
     --secondary-color: #50e3c2;
+    --danger-color: #e74c3c; /* Rojo para alertas */
+    --danger-hover: #c0392b;
     --background-color: #f4f7f6;
     --text-color: #333;
     --card-background: #ffffff;
     --sidebar-background: #ffffff;
     --sidebar-text: #333;
-    --sidebar-active: #e9f2fc;
+    --sidebar-active: var(--primary-color-light);
     --sidebar-active-text: var(--primary-color);
     --border-color: #e0e0e0;
     --vip-color: #ffc107;
 }
 
-.dark-mode {
+body[data-theme='dark'] {
     --background-color: #1a1a1a;
     --text-color: #f0f0f0;
     --card-background: #2c2c2c;
@@ -24,6 +27,7 @@
     --sidebar-active: #333;
     --sidebar-active-text: var(--secondary-color);
     --border-color: #444;
+    --primary-color-light: #2a2a2a;
 }
 
 * {
@@ -68,7 +72,7 @@ body {
     text-decoration: none;
 }
 
-.dark-mode .logo {
+body[data-theme='dark'] .logo {
     color: var(--secondary-color);
 }
 
@@ -123,7 +127,7 @@ body {
 .logout-button {
     width: 100%;
     padding: 10px;
-    background-color: var(--primary-color);
+    background-color: var(--danger-color);
     color: white;
     border: none;
     border-radius: 8px;
@@ -142,7 +146,7 @@ body {
 }
 
 .logout-button:hover {
-    background-color: var(--primary-hover);
+    background-color: var(--danger-hover);
 }
 
 /* --- Main Content --- */
@@ -153,11 +157,11 @@ body {
 }
 
 .dashboard-page {
-    display: none; /* Ocultar todas las páginas por defecto */
+    display: none; 
 }
 
 .dashboard-page.active {
-    display: block; /* Mostrar solo la página activa */
+    display: block; 
 }
 
 .main-header {
@@ -266,7 +270,7 @@ body {
     margin-bottom: 10px;
 }
 
-.dark-mode .project-card-category {
+body[data-theme='dark'] .project-card-category {
     color: var(--secondary-color);
 }
 
@@ -277,7 +281,7 @@ body {
     color: #666;
 }
 
-.dark-mode .project-card-description {
+body[data-theme='dark'] .project-card-description {
     color: #ccc;
 }
 
@@ -310,7 +314,7 @@ body {
     margin-bottom: 15px;
 }
 
-.project-card-button {
+.btn, .btn-primary {
     display: block;
     width: 100%;
     padding: 12px;
@@ -321,9 +325,11 @@ body {
     border-radius: 8px;
     font-weight: 500;
     transition: background-color 0.2s;
+    border: none;
+    cursor: pointer;
 }
 
-.project-card-button:hover {
+.btn:hover, .btn-primary:hover {
     background-color: var(--primary-hover);
 }
 
@@ -401,7 +407,7 @@ input:checked + .dark-mode-slider:before {
     text-align: center;
 }
 
-.dark-mode .investment-details {
+body[data-theme='dark'] .investment-details {
     background-color: rgba(80, 227, 194, 0.1);
     border-color: rgba(80, 227, 194, 0.2);
 }
@@ -413,7 +419,7 @@ input:checked + .dark-mode-slider:before {
     color: var(--primary-color);
 }
 
-.dark-mode .investment-details strong {
+body[data-theme='dark'] .investment-details strong {
     color: var(--secondary-color);
 }
 
@@ -460,7 +466,8 @@ input:checked + .dark-mode-slider:before {
 }
 
 .form-group input,
-.form-group textarea {
+.form-group textarea,
+.form-group select {
     width: 100%;
     padding: 12px;
     border: 1px solid var(--border-color);
@@ -478,7 +485,8 @@ input:checked + .dark-mode-slider:before {
 }
 
 .form-group input:focus,
-.form-group textarea:focus {
+.form-group textarea:focus,
+.form-group select:focus {
     outline: none;
     border-color: var(--primary-color);
 }
@@ -559,6 +567,219 @@ input:checked + .dark-mode-slider:before {
 }
 
 .btn-delete {
-    background-color: #e74c3c;
+    background-color: var(--danger-color);
     color: white;
+}
+
+.btn-delete:hover {
+    background-color: var(--danger-hover);
+}
+
+/* --- Profile Page Specifics --- */
+.profile-layout {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 30px;
+    align-items: start;
+}
+
+@media (max-width: 992px) {
+    .profile-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.profile-card-v2 {
+    background: var(--card-background);
+    border-radius: 12px;
+    padding: 25px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+    position: sticky;
+    top: 30px;
+}
+
+.profile-avatar-wrapper {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 15px;
+}
+
+.profile-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--primary-color);
+    cursor: pointer; /* Added cursor pointer */
+}
+
+.edit-avatar-btn {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 0.9em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: background-color 0.2s;
+}
+
+.edit-avatar-btn:hover {
+    background-color: var(--primary-hover);
+}
+
+.profile-name {
+    font-size: 1.6em;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.profile-tagline {
+    font-size: 1em;
+    color: #888;
+    margin-bottom: 20px;
+}
+
+.profile-stats {
+    display: flex;
+    justify-content: space-around;
+    border-top: 1px solid var(--border-color);
+    padding-top: 20px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-value {
+    font-size: 1.4em;
+    font-weight: 600;
+}
+
+.stat-label {
+    font-size: 0.9em;
+    color: #888;
+}
+
+.profile-info-container .form-section {
+    margin-bottom: 30px;
+}
+
+.form-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+.form-section-header h2 {
+    font-size: 1.5em;
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+.btn-edit-section {
+    padding: 6px 15px;
+    background: var(--primary-color-light);
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.btn-edit-section:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.form-group input,
+.form-group textarea,
+#risk-level-select {
+    background-color: var(--card-background);
+}
+
+.form-group input:disabled,
+.form-group textarea:disabled,
+#risk-level-select:disabled {
+    background-color: transparent;
+    border-color: transparent;
+    padding-left: 0;
+    color: var(--text-color);
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.btn-secondary {
+    background: #ccc;
+    color: #333;
+    border: none;
+    cursor: pointer;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding-top: 10px;
+}
+
+.tag {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 0.9em;
+}
+
+body[data-theme='dark'] .tag {
+    background-color: var(--secondary-color);
+    color: #111;
+}
+
+.tags-input {
+    /* Used for editing tags, styled like a normal input */
+}
+
+/* --- Danger Zone --- */
+.danger-zone {
+    border-color: var(--danger-color);
+    background-color: rgba(231, 76, 60, 0.05);
+}
+
+.danger-zone .form-section-header h2 {
+    color: var(--danger-color);
+}
+
+.danger-zone .btn-danger {
+    background-color: var(--danger-color);
+    color: white;
+    margin-top: 15px; /* Added margin-top */
+}
+
+.danger-zone .btn-danger:hover {
+    background-color: var(--danger-hover);
 }

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InvestMatch - Conectando Inversores y Emprendedores</title>
+    <title>InvestMatch - Registro de Usuario</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
@@ -51,52 +51,21 @@
         .btn-primary { background-color: var(--primary-color); color: white; border: none; border-radius: 5px; padding: 0.9rem; font-size: 1rem; font-weight: 500; width: 100%; margin-top: 1.5rem; cursor: pointer; text-decoration: none; text-align: center; }
         .form-link { margin-top: 2rem; font-size: 0.9rem; text-align: center; color: var(--text-color-secondary); }
         .form-link a { color: var(--primary-color); }
-        .notification { padding: 1rem; margin-bottom: 1rem; border-radius: 5px; text-align: center; }
+        .notification { padding: 1rem; margin-bottom: 1rem; border-radius: 5px; text-align: center; display: none; }
         .notification.error { background-color: #dc354522; color: #f8d7da; border: 1px solid #dc3545; }
+        #success-message { display: none; text-align: center; }
         #success-message a.btn-primary { display: inline-block; width: auto; }
-        
-        .main-footer { background-color: var(--footer-bg); color: var(--text-color-secondary); padding: 4rem 2rem 0; border-top: 1px solid var(--input-border-color); }
-        .footer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.5rem; max-width: 1200px; margin: 0 auto 3rem; }
-        .footer-column h4 { color: var(--text-color-light); font-size: 1.1rem; font-weight: 600; margin-bottom: 1.5rem; }
-        .footer-column p, .footer-column li { font-size: 0.9rem; margin-bottom: 0.75rem; }
-        .footer-column ul { list-style: none; padding: 0; }
-        .footer-column a { color: var(--text-color-secondary); text-decoration: none; transition: color 0.2s ease; }
-        .footer-column a:hover { color: var(--primary-color); }
-        .footer-logo { font-size: 1.8rem; font-weight: 700; color: var(--text-color-light); text-decoration: none; display: block; margin-bottom: 1rem; }
-        .social-icons a { font-size: 1.3rem; margin-right: 1.2rem; }
-        .newsletter-form { display: flex; }
-        .newsletter-form input { flex-grow: 1; padding: 0.75rem; border: 1px solid var(--input-border-color); background: #333; color: var(--text-color-light); border-radius: 5px 0 0 5px; outline: none; }
-        .newsletter-form button { padding: 0.75rem 1rem; background: var(--primary-color); color: white; border: none; border-radius: 0 5px 5px 0; cursor: pointer; font-size: 1rem; }
-        .footer-bottom { border-top: 1px solid var(--input-border-color); padding: 1.5rem 0; text-align: center; font-size: 0.85rem; }
-
-        @media (max-width: 900px) {
-            .main-wrapper { padding: 2rem 1rem; }
-            main.auth-container { grid-template-columns: 1fr; max-width: 480px; }
-            .welcome-section { display: none; }
-            .form-section { padding: 2.5rem; }
-            .landing-header { padding: 1rem; }
-            .header-container { flex-wrap: wrap; justify-content: center; gap: 1rem; }
-            .main-nav { display: none; } 
-            .footer-grid { grid-template-columns: 1fr 1fr; }
-        }
-         @media (max-width: 600px) {
-            .footer-grid { grid-template-columns: 1fr; }
-        }
     </style>
 </head>
 <body class="auth-page">
 
-    <header class="landing-header">
+    <header class="landing-header"> 
         <div class="header-container">
             <a href="index.html" class="logo">InvestMatch</a>
             <nav class="main-nav">
-                <a href="index.html" class="active">Inicio</a>
-                <a href="beneficios.html">Beneficios</a>
-                <a href="faq.html">Preguntas frecuentes</a>
-                <a href="opiniones.html">Opiniones</a>
-                <a href="casos-exito.html">Casos de éxito</a>
-                <a href="blog.html">Blog</a>
-                <a href="contacto.html">Contacto</a>
+                <a href="index.html">Inicio</a>
+                <a href="#">Beneficios</a>
+                <a href="#">Preguntas frecuentes</a>
             </nav>
             <a href="login.html" class="btn-login">Iniciar Sesión</a>
         </div>
@@ -112,7 +81,7 @@
                 <div id="registro-wrapper">
                     <h2 class="form-title">Crea tu cuenta</h2>
                     <p class="form-subtitle">Únete a la comunidad de innovadores.</p>
-                    <div id="notification" class="notification" style="display: none;"></div>
+                    <div id="notification" class="notification"></div>
                     <form id="registroForm">
                         <div class="input-group">
                             <input type="text" id="nombre" placeholder="Nombre" required>
@@ -143,60 +112,25 @@
                         ¿Ya tienes una cuenta? <a href="login.html">Inicia sesión</a>
                     </p>
                 </div>
-                <div id="success-message" style="display: none; text-align: center;">
+                <div id="success-message">
                     <h2 class="form-title">¡Registro completado!</h2>
                     <p class="form-subtitle">Bienvenido a InvestMatch, <strong id="nombre-usuario" style="color: var(--warning-color);"></strong>.</p>
-                    <a href="dashboard.html" class="btn-primary">Ir a mi panel</a>
+                    <a href="#" id="dashboard-link" class="btn-primary">Ir a mi panel</a>
                 </div>
             </section>
         </main>
     </div>
 
-    <footer class="main-footer">
-        <div class="footer-grid">
-            <div class="footer-column">
-                <a href="index.html" class="footer-logo">InvestMatch</a>
-                <p>Conectando la innovación con el capital para construir el futuro.</p>
-                <div class="social-icons">
-                    <a href="#" class="fab fa-linkedin"></a>
-                    <a href="#" class="fab fa-twitter"></a>
-                    <a href="#" class="fab fa-facebook"></a>
-                    <a href="#" class="fab fa-instagram"></a>
-                </div>
-            </div>
-            <div class="footer-column">
-                <h4>Plataforma</h4>
-                <ul>
-                    <li><a href="beneficios.html">Beneficios</a></li>
-                    <li><a href="casos-exito.html">Casos de Éxito</a></li>
-                    <li><a href="opiniones.html">Opiniones</a></li>
-                    <li><a href="login.html">Iniciar Sesión</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h4>Compañía</h4>
-                <ul>
-                    <li><a href="blog.html">Blog</a></li>
-                    <li><a href="#">Términos de Servicio</a></li>
-                    <li><a href="#">Política de Privacidad</a></li>
-                    <li><a href="contacto.html">Contacto</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h4>Mantente Informado</h4>
-                <p>Recibe las últimas noticias y oportunidades de inversión directamente en tu correo.</p>
-                <form class="newsletter-form">
-                    <input type="email" placeholder="Tu email">
-                    <button type="submit"><i class="fas fa-paper-plane"></i></button>
-                </form>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 InvestMatch. Todos los derechos reservados.</p>
-        </div>
-    </footer>
+    <!-- Scripts de Firebase (v8 para compatibilidad) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-    <script type="module" src="init.js"></script>
-    <script type="module" src="registro.js"></script>
+    <!-- Configuración de Firebase y Lógica de la Aplicación -->
+    <!-- EL ORDEN ES CRÍTICO PARA QUE LA APP FUNCIONE -->
+    <script src="firebase-config.js"></script>
+    <script src="models/Usuario.js"></script>
+    <script src="registro.js"></script>
+
 </body>
 </html>
