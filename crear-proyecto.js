@@ -1,5 +1,4 @@
-
-import { auth, db } from './init.js';
+import { auth, db } from './firebase.js';
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 import { ref, push, set, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
@@ -15,10 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
     onAuthStateChanged(auth, (user) => {
         if (user) {
             currentUser = user;
-            // Como no tenemos el nombre directamente, podemos dejar un genérico o buscarlo
-            userNameElement.textContent = 'Emprendedor'; // Simplificado
+            userNameElement.textContent = 'Emprendedor';
         } else {
-            // Si no hay usuario, no debería estar aquí. Redirigir.
             window.location.href = 'login.html';
         }
     });
@@ -38,41 +35,42 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Deshabilitar botón para evitar envíos múltiples
             submitButton.disabled = true;
             submitButton.textContent = 'Publicando...';
 
-            // Recoger los datos del formulario
             const titulo = document.getElementById('titulo').value;
             const descripcion = document.getElementById('descripcion').value;
             const monto = document.getElementById('monto').value;
             const categoria = document.getElementById('categoria').value;
 
             try {
-                // Crear una nueva referencia para el proyecto en la base de datos
-                const projectsRef = ref(db, 'proyectos');
+                // NOTE: Image upload logic is temporarily disabled.
+                // We will just save the project with a placeholder image.
+                const imageUrl = 'https://via.placeholder.com/300'; // Using a placeholder
+
+                const projectsRef = ref(db, `proyectos-emprendedor/${currentUser.uid}`);
                 const newProjectRef = push(projectsRef);
 
-                // Guardar el nuevo proyecto
                 await set(newProjectRef, {
-                    ownerId: currentUser.uid,
-                    titulo: titulo,
-                    descripcion: descripcion,
-                    monto: Number(monto),
-                    categoria: categoria,
-                    createdAt: serverTimestamp() // Marcar el tiempo de creación
+                    creatorId: currentUser.uid,
+                    name: titulo,
+                    description: descripcion,
+                    goalAmount: Number(monto),
+                    category: categoria,
+                    createdAt: serverTimestamp(),
+                    fundedAmount: 0,
+                    isVip: false,
+                    imageUrl: imageUrl // Using the placeholder URL
                 });
 
-                // Notificación de éxito y redirección
                 showNotification('¡Proyecto publicado con éxito! Redirigiendo...', 'success');
                 setTimeout(() => {
-                    window.location.href = 'dashboard.html';
+                    window.location.href = 'dashboard-emprendedor.html';
                 }, 2000);
 
             } catch (error) {
                 console.error("Error al guardar el proyecto:", error);
                 showNotification(`Error: ${error.message}`, 'error');
-                // Reactivar el botón si hay un error
                 submitButton.disabled = false;
                 submitButton.textContent = 'Publicar Proyecto';
             }

@@ -1,8 +1,6 @@
-
 document.addEventListener('DOMContentLoaded', function () {
-    
+
     const initializeDashboard = (user) => {
-        console.log("InvestMatch Entrepreneur Dashboard Script v5.0 (Account Deletion) Loaded.");
         if (!user) return;
 
         // --- DOM ELEMENTS ---
@@ -13,109 +11,267 @@ document.addEventListener('DOMContentLoaded', function () {
         const pages = document.querySelectorAll('.dashboard-page');
         const welcomeElement = document.querySelector('.user-welcome strong');
         const profileCardNameElement = document.getElementById('profile-card-name');
+        const vipSwitchContainer = document.getElementById('vip-switch-container');
+        const vipCheckbox = document.getElementById('is-vip-project');
 
         // Profile Page Elements
-        const editPersonalInfoBtn = document.getElementById('edit-personal-info');
-        const personalInfoForm = document.getElementById('personal-info-form');
-        const editCompanyInfoBtn = document.getElementById('edit-company-info');
-        const companyInfoForm = document.getElementById('company-info-form');
-        const editAvatarBtn = document.querySelector('.edit-avatar-btn');
-        const avatarUploadInput = document.getElementById('avatar-upload-input');
-        const profileAvatarImg = document.getElementById('profile-avatar-img');
         const deleteAccountBtn = document.getElementById('delete-account-btn');
 
-        // --- 0. Set Welcome Message & Profile Name ---
-        if (user) {
-            const userRef = firebase.database().ref('users/' + user.uid);
-            userRef.once('value').then(snapshot => {
-                const userData = snapshot.val();
-                const defaultName = user.displayName || 'Emprendedor';
-                if (userData && userData.name) {
-                    if(welcomeElement) welcomeElement.textContent = userData.name;
-                    if(profileCardNameElement) profileCardNameElement.textContent = userData.name;
-                } else {
-                    if(welcomeElement) welcomeElement.textContent = defaultName;
-                    if(profileCardNameElement) profileCardNameElement.textContent = defaultName;
-                }
-            }).catch(error => {
-                 console.error("Error al leer datos del perfil:", error);
-                 const defaultName = user.displayName || 'Emprendedor';
-                 if(welcomeElement) welcomeElement.textContent = defaultName;
-                 if(profileCardNameElement) profileCardNameElement.textContent = defaultName;
-            });
-        }
+        // --- MODAL DELETE ELEMENTS ---
+        const deleteModal = document.getElementById('delete-account-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+        const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+        const deleteConfirmInput = document.getElementById('delete-confirm-input');
+        const deleteConfirmCheckbox = document.getElementById('delete-confirm-checkbox');
 
-        // --- FIREBASE DATABASE ---
+        // --- FIREBASE DATABASE & STORAGE ---
         const userProjectsRef = firebase.database().ref('proyectos-emprendedor/' + user.uid);
 
-        const renderProjects = (projects) => {
-            if (!currentProjectsList) return;
-            const noProjectsMessage = document.querySelector('.no-projects-message');
-            currentProjectsList.innerHTML = ''; 
-            
+        // --- RENDER FUNCTIONS ---
+
+        const renderSummaryStatistics = (projects) => {
+            const totalRecaudadoElem = document.getElementById('stats-total-recaudado');
+            const totalInversoresElem = document.getElementById('stats-total-inversores');
+            const proyectosActivosElem = document.getElementById('stats-proyectos-activos');
+
+            if (!totalRecaudadoElem || !totalInversoresElem || !proyectosActivosElem) return;
+
             if (!projects || Object.keys(projects).length === 0) {
-                if(noProjectsMessage) noProjectsMessage.style.display = 'block';
+                totalRecaudadoElem.textContent = '0 €';
+                totalInversoresElem.textContent = '0';
+                proyectosActivosElem.textContent = '0';
                 return;
             }
-            if(noProjectsMessage) noProjectsMessage.style.display = 'none';
 
-            for (const projectId in projects) {
-                const project = projects[projectId];
+            const projectsData = Object.values(projects);
+            const totalFunded = projectsData.reduce((sum, project) => sum + (project.fundedAmount || 0), 0);
+            const totalInvestors = projectsData.reduce((sum, project) => {
+                const investorsCount = project.investors ? Object.keys(project.investors).length : 0;
+                return sum + investorsCount;
+            }, 0);
+            const activeProjects = projectsData.length;
+
+            totalRecaudadoElem.innerHTML = `${new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(totalFunded)}`;
+            totalInversoresElem.textContent = totalInvestors;
+            proyectosActivosElem.textContent = activeProjects;
+        };
+
+        const renderProjects = (projectsArray) => {
+            if (!currentProjectsList) return;
+            const noProjectsMessage = document.querySelector('.no-projects-message');
+            currentProjectsList.innerHTML = '';
+        
+            if (!projectsArray || projectsArray.length === 0) {
+                if (noProjectsMessage) noProjectsMessage.style.display = 'block';
+                return;
+            }
+            if (noProjectsMessage) noProjectsMessage.style.display = 'none';
+        
+            for (const project of projectsArray) {
+                const projectId = project.id;
                 const fundedPercentage = project.goalAmount ? ((project.fundedAmount || 0) / project.goalAmount) * 100 : 0;
-                const projectCard = `
-                    <div class="project-card" data-project-id="${projectId}">
-                        <img src="${project.imageUrl || 'https://via.placeholder.com/300'}" class="project-card-img">
-                        <div class="project-card-content">
-                            <h3 class="project-card-title">${project.name}</h3>
-                            <p class="project-card-category">${project.category}</p>
-                            <div class="project-card-progress">
-                                <div class="progress-bar" style="width: ${fundedPercentage.toFixed(2)}%;"></div>
-                                <span>${fundedPercentage.toFixed(2)}% financiado</span>
+                const shortDescription = project.description.length > 100 ? project.description.substring(0, 100) + '...' : project.description;
+
+                const card = document.createElement('div');
+                card.className = 'project-card-v2';
+                if (project.isVip) card.classList.add('vip');
+                card.dataset.projectId = projectId;
+
+
+                card.innerHTML = `
+                    <div class="card-v2-header">
+                        <img src="${project.imageUrl || 'https://via.placeholder.com/400x250'}" alt="${project.name}" class="project-v2-image">
+                        <div class="card-v2-overlay">
+                            ${project.isVip ? '<div class="vip-tag"><i class="fa-solid fa-crown"></i> VIP</div>' : ''}
+                            <span class="project-v2-category">${project.category}</span>
+                        </div>
+                    </div>
+                    <div class="card-v2-body">
+                        <h3 class="project-v2-title">${project.name}</h3>
+                        <p class="project-v2-description">${shortDescription}</p>
+                        <div class="project-v2-funding">
+                            <div class="funding-progress-bar">
+                                <div class="funding-progress" style="width: ${fundedPercentage.toFixed(1)}%;"></div>
                             </div>
-                            <div class="project-card-funding">
-                                <strong>${(project.fundedAmount || 0).toLocaleString('es-ES')} €</strong> de ${project.goalAmount.toLocaleString('es-ES')} €
+                            <div class="funding-details">
+                                <span>${new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(project.fundedAmount || 0)}</span>
+                                <span class="funding-percentage">${fundedPercentage.toFixed(1)}%</span>
                             </div>
-                            <div class="project-card-actions">
-                                <a href="#" class="btn btn-secondary btn-edit">Editar</a>
-                                <a href="#" class="btn btn-danger btn-delete">Eliminar</a>
-                            </div>
+                        </div>
+                        <div class="project-card-actions" style="margin-top: 1rem;">
+                           <a href="#" class="btn btn-secondary btn-edit" style="width: 100%; margin-bottom: 0.5rem;">Editar</a>
+                           <a href="#" class="btn btn-danger btn-delete" style="width: 100%;">Eliminar</a>
                         </div>
                     </div>
                 `;
-                currentProjectsList.insertAdjacentHTML('beforeend', projectCard);
+                currentProjectsList.appendChild(card);
             }
         };
 
+        const renderStatisticsChart = (projectsArray) => {
+            const ctx = document.getElementById('project-performance-chart')?.getContext('2d');
+            if (!ctx) return;
+
+            const projectsData = projectsArray || [];
+
+            if (window.myProjectChart) {
+                window.myProjectChart.destroy();
+            }
+
+            if (projectsData.length === 0) {
+                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim();
+                ctx.font = "16px 'Poppins', sans-serif";
+                ctx.fillStyle = textColor;
+                ctx.textAlign = "center";
+                ctx.fillText("Aún no tienes proyectos para mostrar estadísticas.", ctx.canvas.width / 2, 50);
+                return;
+            }
+
+            const projectNames = projectsData.map(p => p.name);
+            const projectFunding = projectsData.map(p => p.fundedAmount || 0);
+            const projectGoals = projectsData.map(p => p.goalAmount);
+
+            const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
+            const secondaryColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color').trim();
+            const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim();
+            const gridColor = getComputedStyle(document.documentElement).getPropertyValue('--border-color').trim();
+            const cardBgColor = getComputedStyle(document.documentElement).getPropertyValue('--card-background').trim();
+
+            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, primaryColor);
+            gradient.addColorStop(1, secondaryColor);
+
+            window.myProjectChart = new Chart(ctx, {
+                type: 'bar', 
+                data: {
+                    labels: projectNames,
+                    datasets: [
+                        { 
+                            label: 'Fondos Recaudados (€)', 
+                            data: projectFunding, 
+                            backgroundColor: gradient, 
+                            barPercentage: 0.6, 
+                            categoryPercentage: 0.7, 
+                            order: 1 
+                        },
+                        { 
+                            label: 'Meta de Financiación (€)', 
+                            data: projectGoals, 
+                            type: 'line', 
+                            borderColor: textColor, 
+                            borderWidth: 2, 
+                            borderDash: [5, 5], 
+                            pointBackgroundColor: textColor, 
+                            pointRadius: 4, 
+                            pointHoverRadius: 6, 
+                            fill: false, 
+                            tension: 0.3, 
+                            order: 0 
+                        }
+                    ]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    interaction: { mode: 'index', intersect: false }, 
+                    scales: { 
+                        y: { beginAtZero: true, ticks: { color: textColor, font: { family: "'Poppins', sans-serif" }, callback: function(value) { return '€' + value.toLocaleString('es-ES'); } }, grid: { color: gridColor, drawBorder: false } }, 
+                        x: { ticks: { color: textColor, font: { family: "'Poppins', sans-serif" } }, grid: { display: false } } 
+                    }, 
+                    plugins: { 
+                        legend: { position: 'top', labels: { color: textColor, font: { size: 14, family: "'Poppins', sans-serif" }, usePointStyle: true, boxWidth: 8 } }, 
+                        tooltip: { 
+                            enabled: true, 
+                            backgroundColor: cardBgColor, 
+                            titleColor: textColor, 
+                            bodyColor: textColor, 
+                            borderColor: gridColor, 
+                            borderWidth: 1, 
+                            titleFont: { size: 16, weight: '600', family: "'Poppins', sans-serif" }, 
+                            bodyFont: { size: 13, family: "'Poppins', sans-serif" }, 
+                            padding: 15, 
+                            cornerRadius: 10, 
+                            displayColors: true, 
+                            callbacks: { 
+                                title: (ctx) => ctx[0].label, 
+                                label: (ctx) => ` ${ctx.dataset.label || ''}: ${new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(ctx.parsed.y)}`
+                            } 
+                        } 
+                    } 
+                }
+            });
+        };
+
+        // --- DATA LISTENER ---
         userProjectsRef.on('value', (snapshot) => {
             const projects = snapshot.val();
-            renderProjects(projects);
+
+            const sortedProjects = projects
+                ? Object.entries(projects).map(([id, data]) => ({ ...data, id }))
+                : [];
+
+            sortedProjects.sort((a, b) => {
+                const vipSort = (b.isVip ? 1 : 0) - (a.isVip ? 1 : 0);
+                if (vipSort !== 0) return vipSort;
+                return b.createdAt - a.createdAt;
+            });
+
+            renderSummaryStatistics(projects);
+            renderProjects(sortedProjects);
+            renderStatisticsChart(sortedProjects);
         });
 
-        // --- EVENT HANDLERS ---
+        // --- FORM LOGIC ---
+        if (vipSwitchContainer && vipCheckbox) {
+            vipSwitchContainer.addEventListener('click', () => {
+                vipCheckbox.checked = !vipCheckbox.checked;
+                vipCheckbox.dispatchEvent(new Event('change')); 
+            });
+            vipCheckbox.addEventListener('change', () => {
+                vipSwitchContainer.classList.toggle('vip-selected', vipCheckbox.checked);
+            });
+        }
+
         if (projectForm) {
             projectForm.addEventListener('submit', function (e) {
                 e.preventDefault();
+                const isVip = vipCheckbox.checked;
+                const submitButton = projectForm.querySelector('.btn-submit');
+
+                submitButton.disabled = true;
+                submitButton.textContent = 'Publicando...';
+
                 const newProject = {
                     name: document.getElementById('project-title').value,
                     description: document.getElementById('project-description').value,
                     category: document.getElementById('project-category').value,
                     goalAmount: Number(document.getElementById('funding-goal').value),
-                    imageUrl: document.getElementById('project-image').value,
-                    fundedAmount: 0, 
+                    imageUrl: 'https://firebasestorage.googleapis.com/v0/b/desarrolloenlanube-67988-277f8.appspot.com/o/placeholder%2Fplaceholder.png?alt=media&token=f0b2977c-9379-444a-b5d3-826a793abf9e',
+                    isVip: isVip,
+                    fundedAmount: 0,
+                    creatorId: user.uid,
                     createdAt: firebase.database.ServerValue.TIMESTAMP
                 };
+
                 userProjectsRef.push(newProject).then(() => {
                     projectForm.reset();
+                    vipCheckbox.checked = false;
+                    vipSwitchContainer.classList.remove('vip-selected');
                     document.querySelector('.nav-link[data-page="page-mis-proyectos"]').click();
-                }).catch(error => console.error("Error al crear proyecto: ", error));
+                }).catch(error => {
+                    console.error("Error al crear proyecto: ", error);
+                    alert("Error al guardar los datos del proyecto.");
+                }).finally(() => {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Publicar Proyecto';
+                });
             });
         }
-
-        if (logoutButton) {
-            logoutButton.addEventListener('click', () => {
-                firebase.auth().signOut().then(() => { window.location.href = 'index.html'; });
-            });
-        }
+        
+        // --- UI & ACCOUNT ACTIONS ---
+        if (logoutButton) logoutButton.addEventListener('click', () => firebase.auth().signOut().then(() => { window.location.href = 'index.html'; }));
 
         navLinks.forEach(link => {
             link.addEventListener('click', (e) => {
@@ -127,130 +283,54 @@ document.addEventListener('DOMContentLoaded', function () {
                 link.classList.add('active');
             });
         });
-        
-        // --- PROFILE PAGE FUNCTIONS & HANDLERS ---
-        const setFormEditState = (form, isEditing) => {
-            if (!form) return;
-            const inputs = form.querySelectorAll('input, textarea');
-            const actions = form.querySelector('.form-actions');
-            const editButtonId = `edit-${form.id.split('-form')[0]}`;
-            const editButton = document.getElementById(editButtonId);
 
-            inputs.forEach(input => {
-                 if (input.type !== 'email') { 
-                    input.disabled = !isEditing;
-                }
-            });
-
-            if (actions) actions.style.display = isEditing ? 'flex' : 'none';
-            if (editButton) editButton.style.display = isEditing ? 'none' : 'block';
+        const validateDeleteInput = () => { confirmDeleteBtn.disabled = !(deleteConfirmInput.value === 'ELIMINAR' && deleteConfirmCheckbox.checked); };
+        const openDeleteModal = () => { if (deleteModal) { deleteModal.style.display = 'flex'; setTimeout(() => deleteModal.classList.add('active'), 10); } };
+        const closeDeleteModal = () => { if (deleteModal) { deleteModal.classList.remove('active'); setTimeout(() => { deleteModal.style.display = 'none'; deleteConfirmInput.value = ''; deleteConfirmCheckbox.checked = false; confirmDeleteBtn.disabled = true; }, 300); } };
+        if(deleteAccountBtn) deleteAccountBtn.addEventListener('click', openDeleteModal);
+        deleteConfirmInput.addEventListener('input', validateDeleteInput);
+        deleteConfirmCheckbox.addEventListener('change', validateDeleteInput);
+        const executeDeleteAccount = async () => {
+            confirmDeleteBtn.disabled = true; confirmDeleteBtn.textContent = 'Eliminando...';
+            try {
+                await firebase.database().ref('proyectos-emprendedor/' + user.uid).remove();
+                await firebase.database().ref('users/' + user.uid).remove();
+                await user.delete();
+                localStorage.clear(); window.location.href = 'index.html';
+            } catch (error) {
+                console.error("Error al eliminar la cuenta del emprendedor:", error);
+                alert("Hubo un error al eliminar tu cuenta.");
+                confirmDeleteBtn.disabled = false; confirmDeleteBtn.textContent = 'Eliminar Cuenta'; closeDeleteModal();
+            }
         };
-        
-        const triggerAvatarUpload = () => {
-            if (avatarUploadInput) avatarUploadInput.click();
-        };
-
-        if (editAvatarBtn) {
-            editAvatarBtn.addEventListener('click', triggerAvatarUpload);
-        }
-
-        if (profileAvatarImg) {
-            profileAvatarImg.style.cursor = 'pointer';
-            profileAvatarImg.addEventListener('click', triggerAvatarUpload);
-        }
-
-        if (avatarUploadInput) {
-            avatarUploadInput.addEventListener('change', (event) => {
-                const file = event.target.files[0];
-                if (file && profileAvatarImg) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        profileAvatarImg.src = e.target.result;
-                        console.log("Avatar del emprendedor actualizado en la vista.");
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-        }
-
-        if(editPersonalInfoBtn) {
-            editPersonalInfoBtn.addEventListener('click', () => setFormEditState(personalInfoForm, true));
-        }
-
-        if (personalInfoForm) {
-            personalInfoForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                console.log('Guardando información personal del emprendedor...');
-                setFormEditState(personalInfoForm, false);
-            });
-            const cancelBtn = personalInfoForm.querySelector('.cancel-edit');
-            if(cancelBtn) cancelBtn.addEventListener('click', () => setFormEditState(personalInfoForm, false));
-        }
-
-        if(editCompanyInfoBtn) {
-            editCompanyInfoBtn.addEventListener('click', () => setFormEditState(companyInfoForm, true));
-        }
-
-        if (companyInfoForm) {
-            companyInfoForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                console.log('Guardando información de la empresa...');
-                setFormEditState(companyInfoForm, false);
-            });
-            const cancelBtn = companyInfoForm.querySelector('.cancel-edit');
-            if(cancelBtn) cancelBtn.addEventListener('click', () => setFormEditState(companyInfoForm, false));
-        }
-
-        if (deleteAccountBtn) {
-            deleteAccountBtn.addEventListener('click', async () => {
-                const confirmation = confirm("¿Estás absolutamente seguro de que quieres eliminar tu cuenta? Esta acción es irreversible y todos tus datos, incluidos tus proyectos, serán borrados permanentemente.");
-                if (confirmation) {
-                    try {
-                        const userId = user.uid;
-                        // 1. Eliminar datos de la Realtime Database (proyectos y perfil)
-                        await firebase.database().ref('proyectos-emprendedor/' + userId).remove();
-                        await firebase.database().ref('users/' + userId).remove();
-
-                        // 2. Eliminar cuenta de autenticación de Firebase
-                        await user.delete();
-
-                        // 3. Redirigir al inicio
-                        window.location.href = 'index.html';
-
-                    } catch (error) {
-                        console.error("Error al eliminar la cuenta:", error);
-                        alert("Hubo un error al intentar eliminar tu cuenta. Es posible que necesites volver a iniciar sesión para completar esta acción.");
-                    }
-                }
-            });
-        }
+        if(closeModalBtn) closeModalBtn.addEventListener('click', closeDeleteModal);
+        if(cancelDeleteBtn) cancelDeleteBtn.addEventListener('click', closeDeleteModal);
+        if(confirmDeleteBtn) confirmDeleteBtn.addEventListener('click', executeDeleteAccount);
+        if (deleteModal) deleteModal.addEventListener('click', (e) => { if (e.target === deleteModal) closeDeleteModal(); });
 
         // --- INITIALIZATION ---
-        if (navLinks.length > 0) {
-             document.querySelector('.nav-link[data-page="page-mis-proyectos"]').click();
-        }
+        firebase.database().ref('users/' + user.uid).once('value').then(snapshot => {
+            const userData = snapshot.val();
+            const name = (userData && userData.name) || user.displayName || 'Emprendedor';
+            if (welcomeElement) welcomeElement.textContent = name;
+            if (profileCardNameElement) profileCardNameElement.textContent = name;
+        });
+
+        if (navLinks.length > 0) document.querySelector('.nav-link[data-page="page-mis-proyectos"]').click();
+
     };
 
-    // --- FIREBASE AUTHENTICATION & AUTHORIZATION ---
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
-            const userRef = firebase.database().ref('users/' + user.uid);
-            userRef.once('value').then((snapshot) => {
+            firebase.database().ref('users/' + user.uid).once('value').then((snapshot) => {
                 const userData = snapshot.val();
                 if (userData && userData.role === 'emprendedor') {
                     initializeDashboard(user);
                 } else {
-                    console.error('Acceso denegado. El usuario no tiene el rol de emprendedor.');
-                    firebase.auth().signOut();
-                    window.location.href = 'index.html';
+                    firebase.auth().signOut(); window.location.href = 'index.html';
                 }
-            }).catch(error => {
-                console.error('Error al obtener datos del usuario:', error);
-                firebase.auth().signOut();
-                window.location.href = 'index.html';
-            });
+            }).catch(error => { console.error('Error al obtener datos del usuario:', error); firebase.auth().signOut(); window.location.href = 'index.html'; });
         } else {
-            console.log('Usuario no autenticado. Redirigiendo a inicio.');
             window.location.href = 'index.html';
         }
     });

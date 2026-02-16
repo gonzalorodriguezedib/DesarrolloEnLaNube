@@ -1,81 +1,146 @@
-
 document.addEventListener('DOMContentLoaded', () => {
-    // --- Datos de Ejemplo (en una app real vendrían de una API) ---
-    const projectsData = {
-        'proj-agrotech': { title: 'AgroTech Sostenible' },
-        'proj-educafuturo': { title: 'EducaFuturo' },
-        'proj-connectlocal': { title: 'Connect-Local' }
-    };
+    let projectId = null;
+    let projectCreatorId = null;
+    let projectData = null;
+    let currentUser = null;
 
-    // --- Obtener datos del proyecto de la URL ---
-    const urlParams = new URLSearchParams(window.location.search);
-    const projectId = urlParams.get('id');
-    const project = projectsData[projectId] || { title: 'un proyecto increíble' };
-
-    document.getElementById('project-title-placeholder').textContent = project.title;
-
-    // --- Elementos del DOM ---
+    // --- DOM Elements ---
     const amountInput = document.getElementById('investment-amount');
     const payButton = document.getElementById('pay-button');
     const amountToPaySpan = document.getElementById('amount-to-pay');
     const paymentMethodOptions = document.querySelectorAll('.payment-method-option');
     const paymentForms = document.querySelectorAll('.payment-form');
+    const projectTitlePlaceholder = document.getElementById('project-title-placeholder');
+    const loadingOverlay = document.querySelector('.loading-overlay');
 
+    const showLoading = (show) => {
+        if (loadingOverlay) loadingOverlay.style.display = show ? 'flex' : 'none';
+    };
+
+    // --- Firebase Auth ---
+    firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+            currentUser = user;
+            initializePage();
+        } else {
+            alert('Debes iniciar sesión para poder invertir.');
+            window.location.href = 'login.html';
+        }
+    });
+
+    const initializePage = () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        projectId = urlParams.get('id');
+
+        if (!projectId) {
+            alert('ID de proyecto no encontrado.');
+            window.location.href = 'index.html';
+            return;
+        }
+
+        const projectsRef = firebase.database().ref('proyectos-emprendedor');
+        showLoading(true);
+        projectsRef.once('value').then(snapshot => {
+            const allProjectsByCreator = snapshot.val();
+            if (allProjectsByCreator) {
+                for (const creatorId in allProjectsByCreator) {
+                    if (allProjectsByCreator[creatorId][projectId]) {
+                        projectData = allProjectsByCreator[creatorId][projectId];
+                        projectCreatorId = creatorId;
+                        break;
+                    }
+                }
+            }
+
+            if (projectData && projectCreatorId) {
+                projectTitlePlaceholder.textContent = projectData.name;
+                showLoading(false);
+            } else {
+                alert('El proyecto en el que intentas invertir ya no existe.');
+                window.location.href = 'dashboard-inversor.html';
+                showLoading(false);
+            }
+        }).catch(error => {
+            console.error("Error fetching project data:", error);
+            alert("Error al cargar la información del proyecto.");
+            showLoading(false);
+        });
+    };
+
+    // --- UI Logic ---
     let selectedMethod = null;
 
-    // --- Lógica de Selección de Método de Pago ---
     paymentMethodOptions.forEach(option => {
         option.addEventListener('click', () => {
-            // Deseleccionar otros
             paymentMethodOptions.forEach(opt => opt.classList.remove('selected'));
-            // Seleccionar el actual
             option.classList.add('selected');
             selectedMethod = option.dataset.method;
-
-            // Mostrar el formulario correcto
             paymentForms.forEach(form => form.style.display = 'none');
             document.getElementById(`${selectedMethod}-form`).style.display = 'block';
-            
             validateForm();
         });
     });
 
-    // --- Lógica de Actualización de Cantidad ---
     amountInput.addEventListener('input', () => {
         const amount = parseFloat(amountInput.value) || 0;
-        amountToPaySpan.textContent = `$${amount.toFixed(2)}`;
+        amountToPaySpan.textContent = `€${amount.toFixed(2)}`;
         validateForm();
     });
 
-    // --- Validación para Activar el Botón de Pago ---
     function validateForm() {
         const amount = parseFloat(amountInput.value) || 0;
         const isAmountValid = amount >= 50;
         const isMethodSelected = selectedMethod !== null;
-
-        payButton.disabled = !(isAmountValid && isMethodSelected);
+        payButton.disabled = !(isAmountValid && isMethodSelected && projectData);
     }
 
-    // --- Lógica del Botón de Pagar ---
+    // --- Payment Logic ---
     payButton.addEventListener('click', () => {
+        const amountToInvest = parseFloat(amountInput.value);
+        if (!currentUser || !projectData || !projectCreatorId || !projectId || amountToInvest < 50) {
+            alert('Error en los datos. No se puede procesar la inversión.');
+            return;
+        }
+
+        if (currentUser.uid === projectCreatorId) {
+            alert('No puedes invertir en tu propio proyecto.');
+            return;
+        }
+
         payButton.textContent = 'Procesando...';
         payButton.disabled = true;
 
-        // Simular llamada a una API de pago
         setTimeout(() => {
-            // Guardar la inversión en localStorage
-            const investments = JSON.parse(localStorage.getItem('investments')) || [];
-            if (!investments.includes(projectId)) {
-                investments.push(projectId);
-                localStorage.setItem('investments', JSON.stringify(investments));
-            }
+            const newInvestmentKey = firebase.database().ref().child(`inversiones-inversor/${currentUser.uid}`).push().key;
+            const updates = {};
 
-            // Redirigir al dashboard con un mensaje de éxito
-            window.location.href = `dashboard-inversor.html?investment_success=true`;
+            updates[`inversiones-inversor/${currentUser.uid}/${newInvestmentKey}`] = {
+                projectId: projectId,
+                amountInvested: amountToInvest,
+                investedAt: firebase.database.ServerValue.TIMESTAMP
+            };
 
-        }, 2000); // Simular 2 segundos de procesamiento
+            updates[`inversiones-proyecto/${projectId}/${newInvestmentKey}`] = {
+                investorId: currentUser.uid,
+                amount: amountToInvest,
+                date: firebase.database.ServerValue.TIMESTAMP
+            };
+            
+            const newFundedAmount = (projectData.fundedAmount || 0) + amountToInvest;
+            updates[`proyectos-emprendedor/${projectCreatorId}/${projectId}/fundedAmount`] = newFundedAmount;
+
+            firebase.database().ref().update(updates)
+                .then(() => {
+                    window.location.href = `dashboard-inversor.html?investment_success=true&project=${projectData.name}`;
+                })
+                .catch(error => {
+                    console.error("Error saving investment:", error);
+                    alert("Ha ocurrido un error al registrar tu inversión. Por favor, inténtalo de nuevo.");
+                    payButton.textContent = 'Pagar';
+                    validateForm();
+                });
+        }, 1500); 
     });
 
-    // Estado inicial
     validateForm();
 });

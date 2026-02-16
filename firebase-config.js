@@ -1,16 +1,22 @@
 
-// Este archivo contiene la configuración de Firebase.
-// Es crucial para conectar tu aplicación web con los servicios de Firebase (autenticación, base de datos, etc.).
+/*
+=================================================================================================
+|   Este archivo contiene la configuración de Firebase para la aplicación.                      |
+|   Es FUNDAMENTAL que reemplaces el objeto `firebaseConfig` con la configuración real          |
+|   de tu propio proyecto de Firebase.                                                        |
+|                                                                                             |
+|   ¿Cómo obtener tu configuración?                                                           |
+|   1. Ve a la Consola de Firebase (https://console.firebase.google.com/).                    |
+|   2. Selecciona tu proyecto.                                                                |
+|   3. Haz clic en el icono de engranaje (Configuración del proyecto).                        |
+|   4. En la pestaña "General", baja hasta "Tus apps".                                       |
+|   5. Busca tu aplicación web y haz clic en "Configuración" o "SDK setup and configuration".   |
+|   6. Selecciona la opción `Config` o `CDN`.                                                 |
+|   7. Copia el objeto `firebaseConfig` y pégalo aquí abajo.                                  |
+=================================================================================================
+*/
 
-// Por favor, reemplaza el siguiente objeto de configuración con las credenciales reales de tu proyecto de Firebase.
-// Puedes encontrar estas credenciales en la configuración de tu proyecto en la consola de Firebase.
-// Instrucciones:
-// 1. Ve a la Consola de Firebase (https://console.firebase.google.com/).
-// 2. Selecciona tu proyecto.
-// 3. Haz clic en el ícono de engranaje (Configuración del proyecto) en el menú de la izquierda.
-// 4. En la pestaña "General", desplázate hacia abajo hasta la sección "Tus apps".
-// 5. Deberías ver una app web. Haz clic en el botón "SDK setup and configuration" (Configuración y configuración del SDK) y copia el objeto de configuración.
-
+// Objeto de configuración de Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyCoUJo-Y4Uow5wI5zHYfyp7gR3Zn9E7ntc",
   authDomain: "desarrolloenlanube-67988-277f8.firebaseapp.com",
@@ -23,4 +29,3 @@ const firebaseConfig = {
 
 // Inicializa Firebase
 firebase.initializeApp(firebaseConfig);
-
