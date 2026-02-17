@@ -54,7 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const detailCreatorAvatar = document.getElementById('detail-creator-avatar');
         const detailCreatorName = document.getElementById('detail-creator-name');
         
-        // --- Modal Elements (Added with care) ---
         const successModal = document.getElementById('investment-success-modal');
         const successModalMessage = document.getElementById('investment-success-message');
         const closeSuccessModalBtn = document.getElementById('close-success-modal-btn');
@@ -64,6 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const usersRef = firebase.database().ref('users');
         const userFavoritesRef = firebase.database().ref(`favorites/${user.uid}`);
         const userInvestmentsRef = firebase.database().ref(`inversiones-inversor/${user.uid}`);
+        const userRef = firebase.database().ref('users/' + user.uid);
 
         // --- DATA CACHE & STATE ---
         let sortedProjects = [];
@@ -73,9 +73,9 @@ document.addEventListener('DOMContentLoaded', () => {
         let projectsLoaded = false;
         let investmentsLoaded = false;
         let currentOpenProject = { id: null, creatorId: null };
-        const investorName = userData.name || 'Inversor'; // For personalized message
+        const investorName = userData.name || 'Inversor';
 
-        // --- UI Functions (Navigation, Toast & New Modal) ---
+        // --- UI Functions ---
         const showPage = (pageId) => {
             const pageKey = pageId.startsWith('page-') ? pageId.replace('page-', '') : pageId;
             Object.values(pages).forEach(p => p.classList.remove('active'));
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (pageKey === 'inversiones') updatePortfolioView();
         };
 
-        const showToast = (message, type = 'error') => { // Kept for error handling
+        const showToast = (message, type = 'error') => {
             if (!toastContainer) return;
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
@@ -100,63 +100,70 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!successModal || !successModalMessage) return;
             successModalMessage.innerHTML = `¡Enhorabuena, <strong>${investorName}</strong>! <br>Tu inversión de <strong>${new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(amount)}</strong> en el proyecto "${projectName}" ha sido procesada con éxito.`;
             successModal.style.display = 'flex';
-            setTimeout(() => successModal.classList.add('active'), 10); // Delay for transition
+            setTimeout(() => successModal.classList.add('active'), 10);
         };
 
         const hideInvestmentSuccessModal = () => {
             if (!successModal) return;
             successModal.classList.remove('active');
-            // Wait for the transition to finish before hiding
-            setTimeout(() => {
-                successModal.style.display = 'none';
-            }, 300);
+            setTimeout(() => { successModal.style.display = 'none'; }, 300);
         };
 
         // --- RENDER & UPDATE FUNCTIONS ---
-
-        const updateProjectDetailUI = (projectId, investmentAmount) => {
-            const project = projectsById[projectId];
+        const updateProjectDetailView = (project) => {
             if (!project) return;
+            
+            detailProjectImage.src = project.imageUrl || 'https://via.placeholder.com/600x400';
+            detailProjectTitle.textContent = project.name;
+            detailProjectCategory.textContent = project.category;
+            detailProjectDescriptionFull.textContent = project.description;
+            detailProjectVipTag.style.display = project.isVip ? 'inline-flex' : 'none';
 
-            // Update local data cache immediately
-            project.fundedAmount = (project.fundedAmount || 0) + investmentAmount;
-            // Assuming a new investor is added with each investment
-            // In a real app, you might get this from a transaction result
-            project.investors = (project.investors || 0) + 1; 
+            const fundedAmount = project.fundedAmount || 0;
+            const goalAmount = project.goalAmount || 0;
+            const fundedPercentage = goalAmount > 0 ? (fundedAmount / goalAmount) * 100 : 0;
 
-            // Check if the user is currently viewing the updated project
-            if (currentOpenProject.id === projectId && pages.detalleProyecto.classList.contains('active')) {
-                const fundedPercentage = project.goalAmount > 0 ? (project.fundedAmount / project.goalAmount) * 100 : 0;
-
-                detailProjectFundedAmount.textContent = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(project.fundedAmount);
-                detailProjectProgressBar.style.width = `${Math.min(fundedPercentage, 100)}%`;
-                // Increment investor count on the UI
-                detailProjectInvestorsCount.textContent = parseInt(detailProjectInvestorsCount.textContent, 10) + 1;
-            }
-        };
+            detailProjectFundedAmount.textContent = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(fundedAmount);
+            detailProjectGoalAmount.textContent = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(goalAmount);
+            detailProjectProgressBar.style.width = `${Math.min(fundedPercentage, 100)}%`;
+            detailProjectDaysLeft.textContent = 'N/A';
+            detailProjectInvestorsCount.textContent = project.investors || 0;
+        }
 
         const renderInvestorStatistics = () => {
-            const totalInvestedElem = document.getElementById('summary-total-invested');
+            const summaryTotalInvestedElem = document.getElementById('summary-total-invested');
             const portfolioDiversityElem = document.getElementById('summary-portfolio-diversity');
             const successfulProjectsElem = document.getElementById('summary-successful-projects');
-            if(!totalInvestedElem) return; // Guard clause
+            const profileTotalInvestmentsElem = document.getElementById('profile-stat-investments');
+            const profileTotalInvestedElem = document.getElementById('profile-stat-total-invested');
 
             const investmentsData = userInvestments ? Object.values(userInvestments) : [];
-            if (investmentsData.length === 0 || !projectsLoaded) {
-                totalInvestedElem.textContent = '€0';
-                portfolioDiversityElem.textContent = '0 Sectores';
-                successfulProjectsElem.textContent = '0';
+            const totalInvestmentsCount = investmentsData.length;
+            const totalInvested = investmentsData.reduce((sum, inv) => sum + inv.amountInvested, 0);
+
+            if (totalInvestmentsCount === 0 || !projectsLoaded) {
+                if(summaryTotalInvestedElem) summaryTotalInvestedElem.textContent = '€0';
+                if(portfolioDiversityElem) portfolioDiversityElem.textContent = '0 Sectores';
+                if(successfulProjectsElem) successfulProjectsElem.textContent = '0';
+                if(profileTotalInvestmentsElem) profileTotalInvestmentsElem.textContent = '0';
+                if(profileTotalInvestedElem) profileTotalInvestedElem.textContent = '€0';
                 return;
             }
-            const totalInvested = investmentsData.reduce((sum, inv) => sum + inv.amountInvested, 0);
+
             const investedCategories = new Set(investmentsData.map(inv => projectsById[inv.projectId]?.category).filter(Boolean));
             const successfulProjectsCount = [...new Set(investmentsData.map(inv => inv.projectId))].reduce((count, projectId) => {
                 const project = projectsById[projectId];
                 return (project && (project.fundedAmount || 0) >= project.goalAmount) ? count + 1 : count;
             }, 0);
-            totalInvestedElem.textContent = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(totalInvested);
-            portfolioDiversityElem.textContent = `${investedCategories.size} ${investedCategories.size === 1 ? 'Sector' : 'Sectores'}`;
-            successfulProjectsElem.textContent = successfulProjectsCount;
+
+            const formattedTotalInvested = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(totalInvested);
+            const compactFormattedTotalInvested = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', notation: 'compact' }).format(totalInvested);
+
+            if(summaryTotalInvestedElem) summaryTotalInvestedElem.textContent = formattedTotalInvested;
+            if(portfolioDiversityElem) portfolioDiversityElem.textContent = `${investedCategories.size} ${investedCategories.size === 1 ? 'Sector' : 'Sectores'}`;
+            if(successfulProjectsElem) successfulProjectsElem.textContent = successfulProjectsCount;
+            if(profileTotalInvestmentsElem) profileTotalInvestmentsElem.textContent = totalInvestmentsCount;
+            if(profileTotalInvestedElem) profileTotalInvestedElem.textContent = compactFormattedTotalInvested;
         };
 
         const renderInvestmentChart = () => {
@@ -254,21 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!project) { showToast('Error al cargar el proyecto.'); return; }
             currentOpenProject = { id: projectId, creatorId: project.creatorId };
             
-            detailProjectImage.src = project.imageUrl || 'https://via.placeholder.com/600x400';
-            detailProjectTitle.textContent = project.name;
-            detailProjectCategory.textContent = project.category;
-            detailProjectDescriptionFull.textContent = project.description;
-            detailProjectVipTag.style.display = project.isVip ? 'inline-flex' : 'none';
-
-            const fundedAmount = project.fundedAmount || 0;
-            const goalAmount = project.goalAmount || 0;
-            const fundedPercentage = goalAmount > 0 ? (fundedAmount / goalAmount) * 100 : 0;
-
-            detailProjectFundedAmount.textContent = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(fundedAmount);
-            detailProjectGoalAmount.textContent = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(goalAmount);
-            detailProjectProgressBar.style.width = `${Math.min(fundedPercentage, 100)}%`;
-            detailProjectDaysLeft.textContent = 'N/A';
-            detailProjectInvestorsCount.textContent = project.investors || 0; // Set initial count
+            updateProjectDetailView(project);
 
             const creatorSnapshot = await usersRef.child(project.creatorId).once('value');
             const creatorData = creatorSnapshot.val();
@@ -295,9 +288,14 @@ document.addEventListener('DOMContentLoaded', () => {
             sortedProjects = allProjectsArray.sort((a, b) => (b.isVip ? 1 : 0) - (a.isVip ? 1 : 0) || (b.createdAt || 0) - (a.createdAt || 0));
             projectsById = sortedProjects.reduce((acc, p) => ({ ...acc, [p.id]: p }), {});
             projectsLoaded = true;
+
             renderAllProjects();
             renderFavorites();
             updatePortfolioView();
+
+            if (pages.detalleProyecto.classList.contains('active') && currentOpenProject.id && projectsById[currentOpenProject.id]) {
+                updateProjectDetailView(projectsById[currentOpenProject.id]);
+            }
         });
 
         userFavoritesRef.on('value', snapshot => { userFavorites = snapshot.val() || {}; renderAllProjects(); renderFavorites(); });
@@ -353,21 +351,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 amountInvested: amount,
                 timestamp: firebase.database.ServerValue.TIMESTAMP
             };
+            
+            const updates = {};
+            updates[`proyectos-emprendedor/${creatorId}/${projectId}/fundedAmount`] = firebase.database.ServerValue.increment(amount);
+            updates[`proyectos-emprendedor/${creatorId}/${projectId}/investors`] = firebase.database.ServerValue.increment(1);
+            updates[`inversiones-inversor/${user.uid}/${newInvestmentRef.key}`] = investmentData;
 
-            const projectFundedAmountRef = firebase.database().ref(`proyectos-emprendedor/${creatorId}/${projectId}/fundedAmount`);
-
-            // Securely update the funded amount using a transaction
-            projectFundedAmountRef.transaction(currentAmount => (currentAmount || 0) + amount)
-            .then(transactionResult => {
-                if (!transactionResult.committed) {
-                    throw new Error('Transaction to update funded amount failed.');
-                }
-                // Once amount is updated, log the investor's investment
-                return newInvestmentRef.set(investmentData);
-            })
+            firebase.database().ref().update(updates)
             .then(() => {
-                // --- Success! Now update UI and show modal ---
-                updateProjectDetailUI(projectId, amount); 
                 showInvestmentSuccessModal(amount, projectsById[projectId]?.name || 'este proyecto');
                 investmentAmountInput.value = '';
             })
@@ -380,8 +371,130 @@ document.addEventListener('DOMContentLoaded', () => {
                 investNowBtn.textContent = 'Invertir Ahora';
             });
         });
+
+        // --- PROFILE EDITING LOGIC ---
+        const setupProfileEditing = () => {
+            const profilePage = document.getElementById('page-perfil');
+            if (!profilePage) return;
+
+            const sections = profilePage.querySelectorAll('.form-section');
+
+            sections.forEach(section => {
+                const editBtn = section.querySelector('.btn-edit-section');
+                const form = section.querySelector('form');
+                if (!editBtn || !form) return;
+
+                const inputs = form.querySelectorAll('input:not([type="file"]), textarea');
+                const actions = form.querySelector('.form-actions');
+                const cancelBtn = actions?.querySelector('.cancel-edit');
+                let originalValues = {};
+
+                const enterEditMode = () => {
+                    originalValues = {};
+                    inputs.forEach(input => {
+                        originalValues[input.id] = input.value;
+                        input.disabled = false;
+                    });
+                    editBtn.style.display = 'none';
+                    if (actions) actions.style.display = 'flex';
+                };
+
+                const exitEditMode = (save = false) => {
+                    if (!save) {
+                        inputs.forEach(input => {
+                            input.value = originalValues[input.id] || '';
+                        });
+                    }
+                    inputs.forEach(input => input.disabled = true);
+                    editBtn.style.display = 'block';
+                    if (actions) actions.style.display = 'none';
+                };
+
+                editBtn.addEventListener('click', enterEditMode);
+                cancelBtn?.addEventListener('click', () => exitEditMode(false));
+
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const updates = {};
+                    inputs.forEach(input => {
+                        const key = input.id.replace('-input', '').replace('profile-', '');
+                        updates[key] = input.value;
+                    });
+
+                    userRef.update(updates)
+                        .then(() => {
+                            exitEditMode(true);
+                             showToast('Perfil actualizado con éxito', 'success');
+                            if (updates.name) {
+                                document.querySelector('.user-welcome strong').textContent = updates.name;
+                                document.getElementById('profile-card-name').textContent = updates.name;
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error updating profile:", error);
+                            showToast('Error al actualizar el perfil.', 'error');
+                            exitEditMode(false);
+                        });
+                });
+            });
+        };
         
+        // --- AVATAR UPLOAD LOGIC ---
+        const setupAvatarUpload = () => {
+            const avatarImg = document.getElementById('profile-avatar-img');
+            const editAvatarBtn = document.querySelector('.edit-avatar-btn');
+            const avatarUploadInput = document.getElementById('avatar-upload-input');
+            const storage = firebase.storage();
+
+            if (!avatarImg || !editAvatarBtn || !avatarUploadInput) return;
+
+            const triggerFileUpload = () => avatarUploadInput.click();
+
+            avatarImg.addEventListener('click', triggerFileUpload);
+            editAvatarBtn.addEventListener('click', triggerFileUpload);
+
+            avatarUploadInput.addEventListener('change', e => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                if (!file.type.startsWith('image/')) {
+                    showToast('Por favor, selecciona un archivo de imagen válido.', 'error');
+                    return;
+                }
+
+                showToast('Actualizando foto...', 'success');
+                const uploadTask = storage.ref(`avatars/${user.uid}/${file.name}`).put(file);
+
+                uploadTask.on('state_changed', 
+                    snapshot => {},
+                    error => {
+                        console.error('Error al subir la imagen:', error);
+                        showToast('Error al subir la imagen.', 'error');
+                    },
+                    () => {
+                        uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+                            avatarImg.src = downloadURL;
+                            userRef.update({ avatarUrl: downloadURL })
+                                .then(() => showToast('Foto de perfil actualizada.', 'success'))
+                                .catch(dbError => {
+                                    console.error('Error al guardar la URL en la base de datos:', dbError);
+                                    showToast('No se pudo guardar la nueva foto.', 'error');
+                                });
+                        });
+                    }
+                );
+            });
+        };
+
         // --- INITIALIZATION ---
+        document.getElementById('profile-name-input').value = userData.name || '';
+        document.getElementById('profile-email-input').value = userData.email || user.email || '';
+        document.getElementById('profile-bio-input').value = userData.bio || '';
+        document.querySelector('#investment-prefs-form .tags-input').value = userData.investmentInterests || '';
+        if(userData.avatarUrl) document.getElementById('profile-avatar-img').src = userData.avatarUrl;
+
         showPage('page-explorar');
+        setupProfileEditing();
+        setupAvatarUpload();
     };
 });

@@ -896,6 +896,11 @@ input:checked + .dark-mode-slider:before { transform: translateX(22px); }
 .creator-info strong { display: block; font-weight: 600; }
 .creator-info p { font-size: 0.9em; color: #888; margin: 0; }
 
+.profile-avatar-wrapper .profile-avatar:hover {
+    cursor: pointer;
+    opacity: 0.9;
+}
+
 @media (max-width: 992px) {
     .project-detail-layout {
         grid-template-columns: 1fr; /* Apila las columnas en pantallas pequeñas */

@@ -109,29 +109,29 @@
                     <div class="stat-card-v3">
                         <div class="stat-card-v3-icon investors"><i class="fa-solid fa-users"></i></div>
                         <div class="stat-card-v3-info">
-                            <h4>Inversores Totales</h4>
-                            <p>42</p>
+                            <h4>Proyectos Totales</h4>
+                            <p id="stats-projects-value">0</p>
                         </div>
                     </div>
                     <div class="stat-card-v3">
                         <div class="stat-card-v3-icon funds"><i class="fa-solid fa-hand-holding-dollar"></i></div>
                         <div class="stat-card-v3-info">
                             <h4>Fondos Recaudados</h4>
-                            <p>€60,000</p>
+                            <p id="stats-funds-value">€0</p>
                         </div>
                     </div>
                     <div class="stat-card-v3">
                         <div class="stat-card-v3-icon views"><i class="fa-solid fa-eye"></i></div>
                         <div class="stat-card-v3-info">
                             <h4>Visitas a Proyectos</h4>
-                            <p>8,124</p>
+                            <p id="stats-views-value">0</p>
                         </div>
                     </div>
                     <div class="stat-card-v3">
                         <div class="stat-card-v3-icon conversion"><i class="fa-solid fa-chart-line"></i></div>
                         <div class="stat-card-v3-info">
                             <h4>Tasa de Conversión</h4>
-                            <p>0.52%</p>
+                            <p id="stats-conversion-value">0%</p>
                         </div>
                     </div>
                 </div>
@@ -162,11 +162,11 @@
                             <p class="profile-tagline">CEO & Fundador @ MiStartup</p>
                             <div class="profile-stats">
                                 <div class="stat-item">
-                                    <span class="stat-value">3</span>
+                                    <span class="stat-value" id="profile-stat-projects">0</span>
                                     <span class="stat-label">Proyectos</span>
                                 </div>
                                 <div class="stat-item">
-                                    <span class="stat-value">$120K</span>
+                                    <span class="stat-value" id="profile-stat-funds">€0</span>
                                     <span class="stat-label">Recaudado</span>
                                 </div>
                             </div>
@@ -238,6 +238,7 @@
         </main>
     </div>
     
+    <!-- Modal para Eliminar Cuenta -->
     <div id="delete-account-modal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
             <div class="modal-header">
@@ -259,6 +260,64 @@
             <div class="modal-footer">
                 <button id="cancel-delete-btn" class="btn btn-secondary">Cancelar</button>
                 <button id="confirm-delete-btn" class="btn btn-danger" disabled>Eliminar Cuenta</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Editar Proyecto -->
+    <div id="edit-project-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Editar Proyecto</h2>
+                <button id="close-edit-modal-btn" class="close-modal-btn">&times;</button>
+            </div>
+            <form id="edit-project-form">
+                <div class="modal-body">
+                    <input type="hidden" id="edit-project-id">
+                    <div class="form-group">
+                        <label for="edit-project-title">Título del Proyecto</label>
+                        <input type="text" id="edit-project-title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-project-description">Descripción</label>
+                        <textarea id="edit-project-description" rows="5" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-project-category">Categoría</label>
+                        <input type="text" id="edit-project-category" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-project-goal">Meta de Financiación (€)</label>
+                        <input type="number" id="edit-project-goal" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="cancel-edit-project-btn" class="btn btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para Eliminar Proyecto -->
+    <div id="delete-project-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Confirmar Eliminación</h2>
+                <button id="close-delete-project-modal-btn" class="close-modal-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="delete-project-id">
+                <p>¿Estás seguro de que quieres eliminar este proyecto?</p>
+                <p><strong>Esta acción es irreversible y no podrás recuperarlo.</strong></p>
+                <div class="form-group-checkbox">
+                    <input type="checkbox" id="delete-project-confirm-checkbox">
+                    <label for="delete-project-confirm-checkbox">Entiendo que esta acción es irreversible y acepto eliminar el proyecto permanentemente.</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="cancel-delete-project-btn" class="btn btn-secondary">Cancelar</button>
+                <button type="button" id="confirm-delete-project-btn" class="btn btn-danger" disabled>Eliminar Proyecto</button>
             </div>
         </div>
     </div>
