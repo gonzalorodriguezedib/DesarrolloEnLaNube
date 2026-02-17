@@ -207,9 +207,86 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Página 5: Detalle de Proyecto (Nueva) -->
+            <div id="page-detalle-proyecto" class="dashboard-page">
+                <div class="project-detail-header">
+                    <button id="back-to-projects-btn" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Volver a Proyectos</button>
+                </div>
+                <div class="project-detail-layout">
+                    <!-- Columna Izquierda: Imagen y Datos clave -->
+                    <div class="project-detail-main">
+                        <div class="project-detail-card">
+                            <img id="detail-project-image" src="https://via.placeholder.com/600x400" alt="Imagen del Proyecto" class="project-detail-image">
+                            <div class="project-detail-card-body">
+                                <div class="project-detail-tags">
+                                    <span id="detail-project-category" class="tag category-tag">Tecnología</span>
+                                    <span id="detail-project-vip-tag" class="tag vip-tag" style="display: none;"><i class="fa-solid fa-crown"></i> VIP</span>
+                                </div>
+                                <h1 id="detail-project-title" class="project-detail-title">Título del Proyecto Aquí</h1>
+                                <p id="detail-project-description-full" class="project-detail-description">Aquí va la descripción completa y detallada del proyecto, explicando su misión, visión, el problema que soluciona y el mercado al que se dirige.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Columna Derecha: Financiación e Inversión -->
+                    <aside class="project-detail-sidebar">
+                        <div class="funding-card">
+                            <div class="funding-progress-bar">
+                                <div id="detail-project-progress-bar" class="funding-progress" style="width: 0%;"></div>
+                            </div>
+                            <div class="funding-details-large">
+                                <strong id="detail-project-funded-amount">€0</strong>
+                                <span class="goal-text">de <span id="detail-project-goal-amount">€0</span></span>
+                            </div>
+                            <div class="funding-stats">
+                                <div class="stat">
+                                    <strong id="detail-project-investors-count">0</strong>
+                                    <span>Inversores</span>
+                                </div>
+                                <div class="stat">
+                                    <strong id="detail-project-days-left">N/A</strong>
+                                    <span>Días restantes</span>
+                                </div>
+                            </div>
+                            <div class="investment-action-box">
+                                <h3>Invierte en este proyecto</h3>
+                                <div class="investment-input-group">
+                                    <span class="currency-symbol">€</span>
+                                    <input type="number" id="investment-amount-input" placeholder="50" min="1">
+                                </div>
+                                <button id="invest-now-btn" class="btn btn-primary btn-block">Invertir Ahora</button>
+                            </div>
+                             <div class="creator-info-box">
+                                <h4>Sobre el Emprendedor</h4>
+                                <div class="creator-info">
+                                    <img id="detail-creator-avatar" src="https://via.placeholder.com/50" alt="Avatar del creador">
+                                    <div>
+                                        <strong id="detail-creator-name">Nombre del Creador</strong>
+                                        <p>CEO & Fundador</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+
         </main>
     </div>
     
+    <!-- Modal de Agradecimiento por Inversión -->
+    <div id="investment-success-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content-success">
+            <div class="success-icon-container">
+                <i class="fa-solid fa-check-circle"></i>
+            </div>
+            <h2>¡Inversión Realizada con Éxito!</h2>
+            <p id="investment-success-message" class="success-message">Mensaje de agradecimiento personalizado.</p>
+            <button id="close-success-modal-btn" class="btn btn-primary">Continuar Explorando</button>
+        </div>
+    </div>
+
     <!-- Modal de Confirmación para Eliminar Inversión -->
     <div id="delete-investment-modal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
