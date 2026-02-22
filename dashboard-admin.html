@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - InvestMatch</title>
+    <link rel="stylesheet" href="dashboard-admin.css">
+</head>
+<body>
+    <div class="admin-container">
+        <aside class="sidebar">
+            <h2>Admin Menú</h2>
+            <nav>
+                <ul>
+                    <li><a href="#" id="users-link">Gestión de Usuarios</a></li>
+                    <li><a href="#" id="projects-link">Gestión de Proyectos</a></li>
+                    <li><a href="#" id="payments-link">Gestión de Pagos</a></li>
+                </ul>
+            </nav>
+            <button id="logout-button">Cerrar Sesión</button>
+        </aside>
+        <main class="content" id="admin-content">
+            <h1>Bienvenido al Panel de Administración</h1>
+            <p>Selecciona una opción del menú para comenzar.</p>
+        </main>
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="dashboard-admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        /* --- PIN Modal Styles (No changes) --- */
+        #pin-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        #pin-modal { background: #1e1e1e; padding: 2.5rem; border-radius: 12px; text-align: center; color: #f8f9fa; box-shadow: 0 10px 40px rgba(0,0,0,0.5); width: 90%; max-width: 360px; }
+        #pin-modal h2 { margin-bottom: 1rem; }
+        #pin-modal p { margin-bottom: 1.5rem; color: #a0a0a0; }
+        #pin-modal input { width: 100%; padding: 0.9rem; margin-bottom: 1.2rem; border: 1px solid #3c3c3c; border-radius: 5px; background: #2a2a2a; color: #f8f9fa; text-align: center; font-size: 1rem; }
+        #pin-modal button { width: 100%; padding: 0.9rem; border: none; border-radius: 5px; background-color: #007bff; color: white; cursor: pointer; font-size: 1rem; }
+        #pin-error { color: #ffc107; margin-top: 1rem; font-size: 0.9rem; }
+        .content-wrapper.blurred { filter: blur(8px); }
+        .home-button-container { padding: 1.5rem 0 1rem; text-align: center; }
+        .btn-home { display: inline-block; padding: 0.75rem 1.5rem; font-size: 0.9rem; color: #fff; background-color: #6c757d; border-radius: 5px; text-decoration: none; }
+        .btn-home:hover { background-color: #5a6268; }
+        .btn-home i { margin-right: 0.5rem; }
+
+        /* --- View Toggler Styles --- */
+        .view-toggler {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: #6c757d; /* Color for the non-link part */
+        }
+        .view-toggler a {
+            color: #007bff;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .view-toggler a:hover {
+            text-decoration: underline;
+        }
+
+        /* --- Shake Animation (No changes) --- */
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); } 20%, 40%, 60%, 80% { transform: translateX(10px); } }
+
+    </style>
+</head>
+<body class="auth-page" style="background-color: #ffffff;">
+
+    <div id="pin-overlay">
+        <div id="pin-modal">
+            <div class="home-button-container" style="padding: 0 0 1.5rem; text-align: center;">
+                <a href="index.html" class="btn-home"><i class="fas fa-home"></i> Volver a Inicio</a>
+            </div>
+            <h2>Acceso Restringido</h2>
+            <p>Introduce el PIN de administrador.</p>
+            <input type="password" id="pin-input" placeholder="PIN de acceso">
+            <button id="pin-submit">Entrar</button>
+            <p id="pin-error" style="display: none;">PIN incorrecto.</p>
+        </div>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="home-button-container">
+            <a href="index.html" class="btn-home"><i class="fas fa-home"></i> Volver a la página principal</a>
+        </div>
+
+        <main class="auth-container" style="grid-template-columns: 1fr; max-width: 480px;">
+            
+            <!-- Login Form (Visible by default) -->
+            <div class="form-section" id="login-view">
+                <h2 class="form-title">Iniciar Sesión en Administración</h2>
+                <p class="form-subtitle">Introduce tus credenciales para continuar.</p>
+    
+                <form id="admin-login-form">
+                    <div class="input-group"><span class="icon"><i class="fas fa-envelope"></i></span><input type="email" id="email-login" placeholder="Email" required></div>
+                    <div class="input-group"><span class="icon"><i class="fas fa-lock"></i></span><input type="password" id="password-login" placeholder="Contraseña" required></div>
+                    <button type="submit" class="btn-submit">Iniciar Sesión</button>
+                    <p id="error-message" class="error-message"></p>
+                </form>
+                <div class="view-toggler">
+                    ¿No tienes una cuenta? <a id="show-register-view">Registra un administrador</a>
+                </div>
+            </div>
+
+            <!-- Register Form (Hidden by default) -->
+            <div class="form-section" id="register-view" style="display: none;">
+                <h2 class="form-title">Registrar Nuevo Administrador</h2>
+                <p class="form-subtitle">Crea una cuenta con privilegios de administrador.</p>
+
+                <form id="admin-register-form">
+                    <div class="input-group"><span class="icon"><i class="fas fa-user"></i></span><input type="text" id="nombre" placeholder="Nombre" required></div>
+                    <div class="input-group"><span class="icon"><i class="fas fa-user-friends"></i></span><input type="text" id="apellidos" placeholder="Apellidos" required></div>
+                    <div class="input-group"><span class="icon"><i class="fas fa-envelope"></i></span><input type="email" id="email-register" placeholder="Email" required></div>
+                    <div class="input-group"><span class="icon"><i class="fas fa-lock"></i></span><input type="password" id="password-register" placeholder="Contraseña (mín. 6 caracteres)" required></div>
+                    <button type="submit" class="btn-submit">Crear Cuenta de Administrador</button>
+                    <p id="register-error-message" class="error-message"></p>
+                </form>
+                 <div class="view-toggler">
+                    ¿Ya tienes una cuenta? <a id="show-login-view">Inicia sesión</a>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script> <!-- Changed to Realtime Database -->
+    <script src="firebase-config.js"></script>
+    <script src="admin-auth.js"></script>
+
+    <script>
+        // PIN Modal Logic (No changes)
+        document.addEventListener('DOMContentLoaded', () => {
+            const pinOverlay = document.getElementById('pin-overlay');
+            const contentWrapper = document.querySelector('.content-wrapper');
+            const pinInput = document.getElementById('pin-input');
+            const pinSubmit = document.getElementById('pin-submit');
+            const pinError = document.getElementById('pin-error');
+            const correctPin = 'admin';
+
+            pinOverlay.style.display = 'flex';
+            contentWrapper.classList.add('blurred');
+            pinInput.focus();
+
+            const checkPin = () => {
+                if (pinInput.value === correctPin) {
+                    pinOverlay.style.display = 'none';
+                    contentWrapper.classList.remove('blurred');
+                } else {
+                    pinError.style.display = 'block';
+                    pinInput.value = '';
+                    pinInput.focus();
+                    const modal = document.getElementById('pin-modal');
+                    modal.style.animation = 'shake 0.5s';
+                    setTimeout(() => { modal.style.animation = '' }, 500);
+                }
+            };
+            pinSubmit.addEventListener('click', checkPin);
+            pinInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') checkPin(); });
+        });
+    </script>
+
+</body>
+</html>
