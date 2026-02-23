@@ -10,7 +10,7 @@
 La plataforma permite:
 - Publicar proyectos de inversión (emprendedores)  
 - Explorar, reservar e invertir en proyectos (inversores)  
-- Gestionar usuarios, reservas y pagos (administrador)  
+- Gestionar usuarios, proyectos y pagos (administrador)  
 
 El sistema incluye una funcionalidad de **impulso de proyectos**, donde los usuarios pueden pagar para destacar su proyecto y aparecer en el **Top 10 VIP** dentro de la app.
 
@@ -18,8 +18,9 @@ El sistema incluye una funcionalidad de **impulso de proyectos**, donde los usua
 
 ## ☁️ Tecnologías utilizadas
 
-- **Frontend:** Desplegado con [Vercel](https://vercel.com)  
-- **Backend y base de datos:** [Firebase](https://firebase.google.com) (Auth, Firestore y Hosting)  
+- **Frontend:** HTML, CSS, JavaScript
+- **Backend y base de datos:** **Firebase** (Authentication, Realtime Database)
+- **Despliegue:** **Firebase Hosting**
 - **Diseño UML:** Creado siguiendo el modelo de clases con relaciones y métodos definidos.  
 - **Lenguaje:** JavaScript / HTML / CSS (para interfaz web)  
 
@@ -43,7 +44,6 @@ El sistema incluye una funcionalidad de **impulso de proyectos**, donde los usua
 - Roles: *Inversor*, *Emprendedor*, *Administrador*.  
 - Edición de perfil y cierre de sesión.  
 - Cifrado de contraseñas y correos.  
-- Activación o desactivación de usuarios por parte del administrador.
 
 ### 💼 Publicación e impulso de proyectos
 - Crear, editar o eliminar proyectos.  
@@ -59,8 +59,9 @@ El sistema incluye una funcionalidad de **impulso de proyectos**, donde los usua
 - Añadir proyectos a favoritos.
 
 ### 🧑‍💼 Panel de administración
-- Gestión de usuarios, proyectos y reservas.  
-- Control de pagos e impulsos.  
+- **Gestión de Usuarios:** Activar/desactivar, cambiar de rol y eliminar usuarios (baja lógica).
+- **Gestión de Proyectos:** Aprobar, rechazar y eliminar proyectos de forma definitiva, incluyendo sus inversiones asociadas.
+- **Gestión de Pagos:** Visualizar un historial de todas las inversiones con detalles sobre el inversor, el proyecto, la cantidad y la fecha.
 - Bloqueo de usuarios sospechosos.  
 
 ### 🔒 Seguridad y control
@@ -83,80 +84,51 @@ El sistema incluye una funcionalidad de **impulso de proyectos**, donde los usua
 ---
 
 ##  diagrama UML
+*Diagrama de clases simplificado que refleja la estructura en Firebase Realtime Database.*
 
 ### clases
 
 class Usuario {
-  - id: string
+  - uid: string
+  - name: string
   - email: string
-  - passwordHash: string
-  - nombre: string
-  - apellidos: string
-  - fechaRegistro: number
-  - activo: boolean
-  - rol: string << "inversor" | "emprendedor" | "admin" >>
+  - role: string << "inversor" | "emprendedor" | "admin" >>
+  - active: boolean
+  - createdAt: timestamp
   --
-  + registro()
+  + register()
   + login()
-  + editarPerfil()
-  + desactivarCuenta()
+  + logout()
 }
 
 class Proyecto {
   - id: string
-  - emprendedorId: string
-  - titulo: string
-  - descripcion: string
-  - imagenes: string[]
-  - montoSolicitado: number
-  - categoria: string
-  - estado: string << "activo" | "cerrado" >>
-  - esVIP: boolean
-  - nivelBoost: number
-  - fechaBoost: number
-  - fechaCreacion: number
+  - creatorId: string
+  - name: string
+  - estado: string << "pendiente" | "aprobado" | "rechazado" >>
+  - (otros campos...)
   --
   + crear()
   + editar()
   + eliminar()
-  + asignarBoost()
-  + quitarBoost()
 }
 
-class Reserva {
+class Inversion {
   - id: string
-  - proyectoId: string
-  - inversorId: string
-  - monto: number
-  - metodoPago: string
-  - comision: number
-  - estado: string << "pendiente" | "pagado" | "cancelado" >>
-  - fechaReservado: number
+  - investorId: string
+  - projectId: string
+  - amountInvested: number
+  - investedAt: timestamp
   --
-  + crearReserva()
-  + cancelarReserva()
-  + confirmarPago()
+  + crearInversion()
+  + cancelarInversion()
 }
 
-class Pago {
-  - id: string
-  - reservaId: string
-  - inversorId: string
-  - proyectoId: string
-  - metodoPago: string
-  - estado: string << "pendiente" | "completado" | "fallido" >>
-  - comision: number
-  - fechaPago: number
-  --
-  + procesarPago()
-  + reembolsar()
-}
 
 ### relaciones
 
 Usuario "1" -- "0..*" Proyecto : crea >
-Usuario "1" -- "0..*" Reserva : realiza >
-Proyecto "1" -- "0..*" Reserva : recibe >
-Reserva "1" -- "0..1" Pago : genera >
+Usuario "1" -- "0..*" Inversion : realiza >
+Proyecto "1" -- "0..*" Inversion : recibe >
 
 © 2025 Gonzalo Rodríguez — 2º DAM  
